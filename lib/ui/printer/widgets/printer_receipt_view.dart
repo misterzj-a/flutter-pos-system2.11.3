@@ -4,14 +4,290 @@ import 'package:possystem/components/imageable_container.dart';
 import 'package:possystem/components/models/order_attribute_value_widget.dart';
 import 'package:possystem/helpers/util.dart';
 import 'package:possystem/models/objects/order_object.dart';
+import 'package:possystem/models/receipt_component.dart';
+import 'package:possystem/models/repository/receipt_templates.dart';
 import 'package:possystem/translator.dart';
+
+const _defaultTextColor = Color(0xFF424242);
 
 class PrinterReceiptView extends StatelessWidget {
   final OrderObject order;
   final ImageableController controller;
+  final List<ReceiptComponent>? customComponents;
 
   const PrinterReceiptView({
     super.key,
+    required this.order,
+    required this.controller,
+    this.customComponents,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Use custom components if provided, otherwise use default from repository
+    final components = customComponents ?? ReceiptTemplates.instance.selected.components;
+
+    final children = components.map((component) => _buildComponent(component, context)).toList();
+
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+      child: Container(
+        constraints: const BoxConstraints(maxHeight: 400),
+        // wider width can result low density of receipt, since the paper
+        // is fixed width (58mm or 80mm).
+        width: 320, // fixed width can provide same density of receipt
+        child: ImageableContainer(controller: controller, children: children),
+      ),
+    );
+  }
+
+  Widget _buildComponent(ReceiptComponent component, BuildContext context) {
+    final theme = Theme.of(context);
+    final discounted = order.products.where((e) => e.isDiscount).toList();
+    final attributes = order.attributes
+        .where((e) => e.modeValue != null)
+        .map((e) => [
+              e.optionName,
+              OrderAttributeValueWidget.string(e.mode, e.modeValue!),
+            ])
+        .toList();
+
+    switch (component.type) {
+      case ReceiptComponentType.textField:
+        final c = component as TextFieldComponent;
+        return RichText(
+          text: TextSpan(children: c.texts.map((e) => e.buildSpan(order: order)).toList()),
+          textAlign: c.textAlign,
+        );
+      case ReceiptComponentType.divider:
+        final c = component as DividerComponent;
+        return SizedBox(height: c.height);
+      case ReceiptComponentType.orderTable:
+        final c = component as OrderTableComponent;
+        return _buildOrderTable(c, theme.textTheme, theme.colorScheme);
+      case ReceiptComponentType.discountTable:
+        if (discounted.isNotEmpty) {
+          final c = component as DiscountTableComponent;
+          return _buildDiscountTable(c, theme, color, text);
+        }
+        return null;
+      case ReceiptComponentType.attributeTable:
+        final c = component as AttributeTableComponent;
+        return _buildOrderTable(c, theme, color, text);
+      case ReceiptComponentType.priceTable:
+        final c = component as PriceTableComponent;
+        return _buildOrderTable(c, theme, color, text);
+    }
+  }
+
+  String _getProductName(OrderProductObject product, {bool showProductName = false, bool showCatalogName = false}) {
+    if (!showProductName) {
+      return product.catalogName;
+    }
+
+    if (!showCatalogName) {
+      return product.productName;
+    }
+
+    return '${product.productName}(${product.catalogName})';
+  }
+
+  Widget _buildOrderTable(OrderTableComponent config, TextTheme theme, ColorScheme color) {
+    final columns = <int, TableColumnWidth>{};
+    int colIndex = 0;
+
+    if (config.showProductName || config.showCatalogName) {
+      columns[colIndex++] = const FlexColumnWidth();
+    }
+    if (config.showQuantity) {
+      columns[colIndex++] = const MaxColumnWidth(FractionColumnWidth(0.1), IntrinsicColumnWidth());
+    }
+    if (config.showSinglePrice) {
+      columns[colIndex++] = const MaxColumnWidth(FractionColumnWidth(0.1), IntrinsicColumnWidth());
+    }
+    if (config.showTotalPrice) {
+      columns[colIndex++] = const MaxColumnWidth(FractionColumnWidth(0.2), IntrinsicColumnWidth());
+    }
+
+    return DefaultTextStyle(
+      style: theme.bodyMedium!.copyWith(height: 1.8, overflow: TextOverflow.clip, color: _defaultTextColor),
+      child: Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        columnWidths: columns,
+        border: TableBorder(
+          horizontalInside: BorderSide(color: color.outlineVariant),
+          top: BorderSide(color: color.outline),
+          bottom: BorderSide(color: color.outline),
+        ),
+        children: [
+          TableRow(
+            children: [
+              if (config.showProductName || config.showCatalogName) TableCell(child: Text(S.printerReceiptColumnName)),
+              if (config.showQuantity) TableCell(child: Text(S.printerReceiptColumnCount, textAlign: TextAlign.end)),
+              if (config.showSinglePrice) TableCell(child: Text(S.printerReceiptColumnPrice, textAlign: TextAlign.end)),
+              if (config.showTotalPrice) TableCell(child: Text(S.printerReceiptColumnTotal, textAlign: TextAlign.end)),
+            ],
+          ),
+          for (final product in order.products)
+            TableRow(
+              children: [
+                if (config.showProductName || config.showCatalogName)
+                  TableCell(
+                    child: Text(_getProductName(product,
+                        showProductName: config.showProductName, showCatalogName: config.showCatalogName)),
+                  ),
+                if (config.showQuantity) TableCell(child: Text(product.count.toString(), textAlign: TextAlign.end)),
+                if (config.showSinglePrice)
+                  TableCell(child: Text('\$${product.singlePrice.toCurrency()}', textAlign: TextAlign.end)),
+                if (config.showTotalPrice)
+                  TableCell(child: Text('\$${product.totalPrice.toCurrency()}', textAlign: TextAlign.end)),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDiscountTable(
+    DiscountTableComponent config,
+    TextTheme theme,
+    Color text,
+    Iterable<dynamic> discounted,
+    List<List<String>> attributes,
+  ) {
+    final children = <TableRow>[];
+
+    children.add(
+      TableRow(children: [
+        if (config.showCatalogName || config.showProductName) TableCell(child: Text(S.printerReceiptDiscountLabel)),
+        if (config.showQuantity) TableCell(child: Text(S.printerReceiptComponentLabelQuantity)),
+        if (config.showSinglePrice) TableCell(child: Text(S.printerReceiptComponentLabelSinglePrice)),
+        if (config.showOriginPrice) TableCell(child: Text(S.printerReceiptDiscountOrigin)),
+        if (config.showTotalPrice) TableCell(child: Text(S.printerReceiptComponentLabelTotalPrice)),
+      ]),
+    );
+    for (final product in discounted) {
+      children.add(
+        TableRow(children: [
+          TableCell(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                _getProductName(
+                  product,
+                  showProductName: config.showProductName,
+                  showCatalogName: config.showCatalogName,
+                ),
+              ),
+            ),
+          ),
+          TableCell(
+            child: Text(
+              '\$${product.originalPrice.toCurrency()}',
+              style: theme.labelMedium?.copyWith(color: text),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ]),
+      );
+    }
+    if (config.showAddOns && attributes.isNotEmpty) {
+      children.add(
+        const TableRow(children: [
+          TableCell(child: SizedBox(height: 4.0)),
+          TableCell(child: SizedBox(height: 4.0)),
+        ]),
+      );
+    }
+
+    if (config.showAddOns && attributes.isNotEmpty) {
+      children.add(
+        TableRow(children: [
+          TableCell(child: Text(S.printerReceiptAddOnsLabel)),
+          TableCell(child: Text(S.printerReceiptAddOnsAdjustment)),
+        ]),
+      );
+      for (final attr in attributes) {
+        children.add(
+          TableRow(children: [
+            TableCell(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(attr[0]),
+              ),
+            ),
+            TableCell(
+              child: Text(
+                attr[1],
+                style: theme.labelMedium?.copyWith(color: text),
+                textAlign: TextAlign.end,
+              ),
+            ),
+          ]),
+        );
+      }
+    }
+
+    children.add(
+      TableRow(children: [
+        TableCell(child: Text(S.printerReceiptTotal)),
+        TableCell(
+          child: Text(
+            '\$${order.price.toCurrency()}',
+            style: theme.titleLarge?.copyWith(color: text),
+          ),
+        ),
+      ]),
+    );
+
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      columnWidths: const {
+        0: FlexColumnWidth(),
+        1: MaxColumnWidth(FractionColumnWidth(0.2), IntrinsicColumnWidth()),
+      },
+      border: TableBorder.all(width: 0, color: Colors.transparent),
+      children: children,
+    );
+  }
+
+  Widget _buildPaymentSection(TextTheme theme, Color text) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      DefaultTextStyle(
+        style: theme.bodyMedium!.copyWith(fontSize: theme.labelMedium!.fontSize, color: text),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(S.printerReceiptPaid),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(S.printerReceiptPrice),
+              Text(S.printerReceiptChange),
+            ]),
+          ),
+        ]),
+      ),
+      DefaultTextStyle(
+        style: theme.labelMedium!.copyWith(color: text),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text('\$${order.paid.toCurrency()}'),
+            Text('\$${order.price.toCurrency()}'),
+            Text('\$${order.change.toCurrency()}'),
+          ],
+        ),
+      ),
+    ]);
+  }
+}
+
+// Keep the old hardcoded version for backwards compatibility
+class _OldPrinterReceiptView extends StatelessWidget {
+  final OrderObject order;
+  final ImageableController controller;
+
+  const _OldPrinterReceiptView({
     required this.order,
     required this.controller,
   });
@@ -33,7 +309,7 @@ class PrinterReceiptView extends StatelessWidget {
     final children = [
       Text(
         S.printerReceiptTitle,
-        style: theme.headlineMedium?.copyWith(height: 1, color: text),
+        style: theme.headlineMedium?.copyWith(height: 1, color: text), // 28
         textAlign: TextAlign.center,
       ),
       const SizedBox(height: 4),
@@ -96,7 +372,7 @@ class PrinterReceiptView extends StatelessWidget {
                 TableCell(
                   child: Text(
                     '\$${product.originalPrice.toCurrency()}',
-                    style: theme.labelMedium?.copyWith(color: text),
+                    style: theme.labelMedium?.copyWith(color: text), // 12
                     textAlign: TextAlign.end,
                   ),
                 ),
@@ -124,7 +400,7 @@ class PrinterReceiptView extends StatelessWidget {
                 TableCell(
                   child: Text(
                     attr[1],
-                    style: theme.labelMedium?.copyWith(color: text),
+                    style: theme.labelMedium?.copyWith(color: text), // 12
                     textAlign: TextAlign.end,
                   ),
                 ),
@@ -135,7 +411,7 @@ class PrinterReceiptView extends StatelessWidget {
             TableCell(
               child: Text(
                 '\$${order.price.toCurrency()}',
-                style: theme.titleLarge?.copyWith(color: text),
+                style: theme.titleLarge?.copyWith(color: text), // 22
               ),
             ),
           ]),
@@ -144,7 +420,7 @@ class PrinterReceiptView extends StatelessWidget {
       const Divider(height: 4),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         DefaultTextStyle(
-          style: theme.bodyMedium!.copyWith(fontSize: theme.labelMedium!.fontSize, color: text),
+          style: theme.bodyMedium!.copyWith(fontSize: theme.labelMedium!.fontSize, color: text), // 14
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(S.printerReceiptPaid),
             Padding(
@@ -157,7 +433,7 @@ class PrinterReceiptView extends StatelessWidget {
           ]),
         ),
         DefaultTextStyle(
-          style: theme.labelMedium!.copyWith(color: text),
+          style: theme.labelMedium!.copyWith(color: text), // 12
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
