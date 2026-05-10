@@ -11,10 +11,7 @@ class HistoryCleanDialog extends StatefulWidget {
   const HistoryCleanDialog({super.key});
 
   static Future<DateTime?> show(BuildContext context) {
-    return showDialog<DateTime>(
-      context: context,
-      builder: (context) => const HistoryCleanDialog(),
-    );
+    return showDialog<DateTime>(context: context, builder: (context) => const HistoryCleanDialog());
   }
 
   @override
@@ -36,33 +33,34 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
       content: RadioGroup(
         groupValue: mode,
         onChanged: _setMode,
-        child: Column(children: [
-          RadioListTile(
-            value: _Mode.lastYear,
-            title: Text(S.analysisHistoryActionClearLastYear),
-            subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year - 1, now.month, now.day))),
-          ),
-          RadioListTile(
-            value: _Mode.sixMonthsAgo,
-            title: Text(S.analysisHistoryActionClearLast6Months),
-            subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year, now.month - 6, now.day))),
-          ),
-          RadioListTile(
-            value: _Mode.custom,
-            title: Text(S.analysisHistoryActionClearCustom),
-            subtitle: Text(customDate == null
-                ? S.analysisHistoryActionClearCustomSubtitle
-                : S.analysisHistoryActionClearSubtitle(customDate!)),
-            toggleable: true,
-          ),
-        ]),
+        child: Column(
+          children: [
+            RadioListTile(
+              value: _Mode.lastYear,
+              title: Text(S.analysisHistoryActionClearLastYear),
+              subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year - 1, now.month, now.day))),
+            ),
+            RadioListTile(
+              value: _Mode.sixMonthsAgo,
+              title: Text(S.analysisHistoryActionClearLast6Months),
+              subtitle: Text(S.analysisHistoryActionClearSubtitle(DateTime(now.year, now.month - 6, now.day))),
+            ),
+            RadioListTile(
+              value: _Mode.custom,
+              title: Text(S.analysisHistoryActionClearCustom),
+              subtitle: Text(
+                customDate == null
+                    ? S.analysisHistoryActionClearCustomSubtitle
+                    : S.analysisHistoryActionClearSubtitle(customDate!),
+              ),
+              toggleable: true,
+            ),
+          ],
+        ),
       ),
       actions: [
         PopButton(title: local.cancelButtonLabel),
-        TextButton(
-          onPressed: () => _onOk(context),
-          child: Text(local.okButtonLabel),
-        ),
+        TextButton(onPressed: () => _onOk(context), child: Text(local.okButtonLabel)),
       ],
     );
   }
@@ -94,11 +92,7 @@ class _HistoryCleanDialogState extends State<HistoryCleanDialog> {
   }
 
   Future<void> _selectCustomDate(BuildContext context) async {
-    final selected = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2021, 1),
-      lastDate: DateTime.now(),
-    );
+    final selected = await showDatePicker(context: context, firstDate: DateTime(2021, 1), lastDate: DateTime.now());
 
     if (selected != null) {
       setState(() {
@@ -147,13 +141,15 @@ class HistoryScheduleResetNoDialog extends StatelessWidget {
     return AlertDialog(
       title: Text(S.analysisHistoryActionScheduleResetNoTitle),
       scrollable: true,
-      content: Column(children: [
-        HintText(S.analysisHistoryActionScheduleResetNoHint),
-        _PeriodSelector(
-          key: _periodKey,
-          initialPeriod: initialPeriod ?? const Period(values: [1], unit: PeriodUnit.xDayOfEachMonth),
-        ),
-      ]),
+      content: Column(
+        children: [
+          HintText(S.analysisHistoryActionScheduleResetNoHint),
+          _PeriodSelector(
+            key: _periodKey,
+            initialPeriod: initialPeriod ?? const Period(values: [1], unit: PeriodUnit.xDayOfEachMonth),
+          ),
+        ],
+      ),
       actions: [
         PopButton(title: local.cancelButtonLabel),
         TextButton(
@@ -174,10 +170,7 @@ class HistoryScheduleResetNoDialog extends StatelessWidget {
 class _PeriodSelector extends StatefulWidget {
   final Period initialPeriod;
 
-  const _PeriodSelector({
-    super.key,
-    required this.initialPeriod,
-  });
+  const _PeriodSelector({super.key, required this.initialPeriod});
 
   @override
   State<_PeriodSelector> createState() => _PeriodSelectorState();
@@ -196,24 +189,27 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        DropdownButtonFormField<PeriodUnit>(
-          initialValue: _unit,
-          icon: const Icon(Icons.arrow_drop_down),
-          isExpanded: true,
-          items: [
-            for (final unit in PeriodUnit.values)
-              DropdownMenuItem<PeriodUnit>(
-                value: unit,
-                child: Text(S.analysisHistoryActionScheduleResetNoPeriod(unit.name)),
-              ),
-          ],
-          onChanged: _updateUnit,
-        ),
-        const SizedBox(width: 8),
-        _buildNumberField(),
-        if (_values.isNotEmpty) _buildNextHint(),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownButtonFormField<PeriodUnit>(
+            initialValue: _unit,
+            icon: const Icon(Icons.arrow_drop_down),
+            isExpanded: true,
+            items: [
+              for (final unit in PeriodUnit.values)
+                DropdownMenuItem<PeriodUnit>(
+                  value: unit,
+                  child: Text(S.analysisHistoryActionScheduleResetNoPeriod(unit.name)),
+                ),
+            ],
+            onChanged: _updateUnit,
+          ),
+          const SizedBox(width: 8),
+          _buildNumberField(),
+          if (_values.isNotEmpty) _buildNextHint(),
+        ],
+      ),
     );
   }
 
@@ -241,38 +237,40 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
   Widget _buildNumberField() {
     return switch (_unit) {
       PeriodUnit.everyXDays || PeriodUnit.everyXWeeks => TextFormField(
-          key: const Key('history.action.schedule_reset_no.x_text_field'),
-          controller: _numberController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(prefixText: 'X = '),
-          validator: Validator.positiveInt('x', minimum: 1, maximum: 10000),
-        ),
+        key: const Key('history.action.schedule_reset_no.x_text_field'),
+        controller: _numberController,
+        keyboardType: TextInputType.number,
+        decoration: const InputDecoration(prefixText: 'X = '),
+        validator: Validator.positiveInt('x', minimum: 1, maximum: 10000),
+      ),
       PeriodUnit.xDayOfEachWeek => DropdownButtonFormField<int>(
-          hint: _buildValuesHint(),
-          icon: const Icon(Icons.arrow_drop_down),
-          validator: _validateValues,
-          items: [
-            for (var day = 1; day <= 7; day++)
-              DropdownMenuItem<int>(
-                value: day,
-                child: SizedBox(
-                  width: 230,
-                  child: StatefulBuilder(
-                    builder: (context, rebuild) {
-                      return CheckboxListTile(
-                        dense: true,
-                        value: _values.contains(day),
-                        title: Text(S.analysisHistoryActionScheduleResetNoWeekday(DateTime(2025, 9, day))),
-                        onChanged: _updateValuesCallback(day, rebuild),
-                      );
-                    },
-                  ),
+        hint: _buildValuesHint(),
+        icon: const Icon(Icons.arrow_drop_down),
+        validator: _validateValues,
+        items: [
+          for (var day = 1; day <= 7; day++)
+            DropdownMenuItem<int>(
+              value: day,
+              child: SizedBox(
+                width: 230,
+                child: StatefulBuilder(
+                  builder: (context, rebuild) {
+                    return CheckboxListTile(
+                      dense: true,
+                      value: _values.contains(day),
+                      title: Text(S.analysisHistoryActionScheduleResetNoWeekday(DateTime(2025, 9, day))),
+                      onChanged: _updateValuesCallback(day, rebuild),
+                    );
+                  },
                 ),
               ),
-          ],
-          onChanged: _noop,
-        ),
-      PeriodUnit.xDayOfEachMonth => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            ),
+        ],
+        onChanged: _noop,
+      ),
+      PeriodUnit.xDayOfEachMonth => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           DropdownButtonFormField<int>(
             key: const Key('history.action.schedule_reset_no.month_day'),
             hint: _buildValuesHint(),
@@ -301,7 +299,8 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
             onChanged: _noop,
           ),
           HintText(S.analysisHistoryActionScheduleResetNoMonthDayHint),
-        ]),
+        ],
+      ),
     };
   }
 
@@ -373,8 +372,4 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
 
 void _noop(int? _) {}
 
-enum _Mode {
-  lastYear,
-  sixMonthsAgo,
-  custom;
-}
+enum _Mode { lastYear, sixMonthsAgo, custom }

@@ -49,11 +49,7 @@ class ImageHolder extends StatelessWidget {
                 padding: padding,
                 decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: colors[0])),
-                  gradient: LinearGradient(
-                    colors: colors,
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                  ),
+                  gradient: LinearGradient(colors: colors, begin: Alignment.bottomCenter, end: Alignment.topCenter),
                 ),
                 child: Text(
                   title!,
@@ -65,11 +61,7 @@ class ImageHolder extends StatelessWidget {
           );
 
     if (onPressed != null) {
-      body = InkWell(
-        onTap: onPressed,
-        focusNode: focusNode,
-        child: body,
-      );
+      body = InkWell(onTap: onPressed, focusNode: focusNode, child: body);
     }
 
     return ConstrainedBox(
@@ -100,25 +92,22 @@ class EditImageHolder extends StatelessWidget {
   final void Function()? onPressed;
   final double size;
 
-  const EditImageHolder({
-    super.key,
-    this.path,
-    this.onSelected,
-    this.onPressed,
-    this.size = 256,
-  }) : assert(onSelected != null || onPressed != null);
+  const EditImageHolder({super.key, this.path, this.onSelected, this.onPressed, this.size = 256})
+    : assert(onSelected != null || onPressed != null);
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider image =
-        path == null ? const AssetImage("assets/food_placeholder.png") as ImageProvider : FileImage(XFile(path!).file);
+    final ImageProvider image = path == null
+        ? const AssetImage("assets/food_placeholder.png") as ImageProvider
+        : FileImage(XFile(path!).file);
 
     return ImageHolder(
       key: const Key('image_holder.edit'),
       image: image,
       title: path == null ? S.imageHolderCreate : S.imageHolderUpdate,
       size: size,
-      onPressed: onPressed ??
+      onPressed:
+          onPressed ??
           () async {
             final file = await context.pushNamed(Routes.imageGallery);
             if (file != null && file is String) onSelected!(file);

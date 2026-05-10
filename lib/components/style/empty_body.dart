@@ -34,15 +34,8 @@ class EmptyBody extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            title ?? S.emptyBodyTitle,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          if (content != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8.0, 16.0, 8.0),
-              child: Text(content!),
-            ),
+          Text(title ?? S.emptyBodyTitle, style: Theme.of(context).textTheme.titleLarge),
+          if (content != null) Padding(padding: const EdgeInsets.fromLTRB(16, 8.0, 16.0, 8.0), child: Text(content!)),
           TextButton(
             key: const Key('empty_body'),
             onPressed: onPressed ?? () => context.pushNamed(routeName!, pathParameters: pathParameters),

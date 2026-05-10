@@ -20,9 +20,6 @@ class OrderAttributes extends ChangeNotifier
 
   @override
   OrderAttribute buildItem(String id, Map<String, Object?> value) {
-    return OrderAttribute.fromObject(OrderAttributeObject.build({
-      'id': id,
-      ...value,
-    }));
+    return OrderAttribute.fromObject(OrderAttributeObject.build({'id': id, ...value}));
   }
 }

@@ -8,11 +8,7 @@ class SliverImageAppBar extends StatelessWidget {
 
   final List<Widget>? actions;
 
-  const SliverImageAppBar({
-    super.key,
-    required this.model,
-    this.actions,
-  });
+  const SliverImageAppBar({super.key, required this.model, this.actions});
 
   @override
   Widget build(BuildContext context) {

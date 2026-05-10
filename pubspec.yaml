@@ -78,6 +78,7 @@ dev_dependencies:
 
   # code style
   flutter_lints: ^5.0.0
+  prefer_shorthands: ^0.4.7
 
   # mock object
   build_runner: ^2.5.4

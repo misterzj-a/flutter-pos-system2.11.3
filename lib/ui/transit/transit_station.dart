@@ -94,10 +94,7 @@ class _TransitStationState extends State<TransitStation> {
                     floating: true,
                     snap: true,
                     forceElevated: innerBoxIsScrolled,
-                    bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(56.0),
-                      child: _buildHeader(),
-                    ),
+                    bottom: PreferredSize(preferredSize: const Size.fromHeight(56.0), child: _buildHeader()),
                   ),
                 ),
               ];
@@ -154,9 +151,16 @@ class _TransitStationState extends State<TransitStation> {
     if (widget.catalog == TransitCatalog.importModel) {
       return switch (widget.method) {
         TransitMethod.googleSheet => gs.ImportBasicHeader(
-            selected: model, stateNotifier: stateNotifier, formatter: formatter, exporter: _googleSheetExporter),
-        TransitMethod.excel =>
-          excel.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
+          selected: model,
+          stateNotifier: stateNotifier,
+          formatter: formatter,
+          exporter: _googleSheetExporter,
+        ),
+        TransitMethod.excel => excel.ImportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+          formatter: formatter,
+        ),
         TransitMethod.csv => csv.ImportBasicHeader(selected: model, stateNotifier: stateNotifier, formatter: formatter),
         TransitMethod.plainText => pt.ImportBasicHeader(selected: model, formatter: formatter),
       };
@@ -164,8 +168,11 @@ class _TransitStationState extends State<TransitStation> {
 
     if (widget.catalog == TransitCatalog.exportModel) {
       return switch (widget.method) {
-        TransitMethod.googleSheet =>
-          gs.ExportBasicHeader(selected: model, stateNotifier: stateNotifier, exporter: _googleSheetExporter),
+        TransitMethod.googleSheet => gs.ExportBasicHeader(
+          selected: model,
+          stateNotifier: stateNotifier,
+          exporter: _googleSheetExporter,
+        ),
         TransitMethod.excel => excel.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
         TransitMethod.csv => csv.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
         TransitMethod.plainText => pt.ExportBasicHeader(selected: model, stateNotifier: stateNotifier),
@@ -174,7 +181,11 @@ class _TransitStationState extends State<TransitStation> {
 
     return switch (widget.method) {
       TransitMethod.googleSheet => gs.ExportOrderHeader(
-          stateNotifier: stateNotifier, exporter: _googleSheetExporter, ranger: ranger, settings: _settings),
+        stateNotifier: stateNotifier,
+        exporter: _googleSheetExporter,
+        ranger: ranger,
+        settings: _settings,
+      ),
       TransitMethod.excel => excel.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger, settings: _settings),
       TransitMethod.csv => csv.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),
       TransitMethod.plainText => pt.ExportOrderHeader(stateNotifier: stateNotifier, ranger: ranger),

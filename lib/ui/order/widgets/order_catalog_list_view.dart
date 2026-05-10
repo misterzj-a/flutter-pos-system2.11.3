@@ -34,12 +34,7 @@ class _OrderCatalogListViewState extends State<OrderCatalogListView> {
   @override
   Widget build(BuildContext context) {
     if (widget.catalogs.isEmpty) {
-      return SingleRowWrap(children: [
-        ChoiceChip(
-          selected: false,
-          label: Text(S.orderCatalogListEmpty),
-        ),
-      ]);
+      return SingleRowWrap(children: [ChoiceChip(selected: false, label: Text(S.orderCatalogListEmpty))]);
     }
 
     var index = 0;
@@ -53,17 +48,16 @@ class _OrderCatalogListViewState extends State<OrderCatalogListView> {
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Wrap(spacing: 6, children: [
-                  for (final catalog in widget.catalogs) _buildChoiceChip(catalog, index++),
-                  const SizedBox(),
-                ]),
+                child: Wrap(
+                  spacing: 6,
+                  children: [
+                    for (final catalog in widget.catalogs) _buildChoiceChip(catalog, index++),
+                    const SizedBox(),
+                  ],
+                ),
               ),
             ),
-            _ProductListView(
-              controller: controller,
-              focusNode: _f,
-              viewNotifier: widget.viewNotifier,
-            ),
+            _ProductListView(controller: controller, focusNode: _f, viewNotifier: widget.viewNotifier),
             const SizedBox(width: 4),
           ],
         ),
@@ -109,11 +103,7 @@ class _OrderCatalogListViewState extends State<OrderCatalogListView> {
 }
 
 class _ProductListView extends StatelessWidget {
-  const _ProductListView({
-    required this.controller,
-    required this.focusNode,
-    required this.viewNotifier,
-  });
+  const _ProductListView({required this.controller, required this.focusNode, required this.viewNotifier});
 
   final MenuController controller;
   final FocusNode focusNode;

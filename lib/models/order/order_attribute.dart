@@ -34,12 +34,12 @@ class OrderAttribute extends Model<OrderAttributeObject>
 
   factory OrderAttribute.fromObject(OrderAttributeObject object) {
     return OrderAttribute(
-        id: object.id,
-        name: object.name!,
-        index: object.index!,
-        mode: object.mode!,
-        options: {for (var option in object.options) option.id!: OrderAttributeOption.fromObject(option)})
-      ..prepareItem();
+      id: object.id,
+      name: object.name!,
+      index: object.index!,
+      mode: object.mode!,
+      options: {for (var option in object.options) option.id!: OrderAttributeOption.fromObject(option)},
+    )..prepareItem();
   }
 
   factory OrderAttribute.fromRow(
@@ -50,13 +50,7 @@ class OrderAttribute extends Model<OrderAttributeObject>
   }) {
     final status = ori == null ? ModelStatus.staged : (mode == ori.mode ? ModelStatus.normal : ModelStatus.updated);
 
-    return OrderAttribute(
-      id: ori?.id,
-      name: row[0],
-      index: index,
-      mode: mode,
-      status: status,
-    );
+    return OrderAttribute(id: ori?.id, name: row[0], index: index, mode: mode, status: status);
   }
 
   OrderAttributeOption? get defaultOption {
@@ -81,20 +75,17 @@ class OrderAttribute extends Model<OrderAttributeObject>
     final option = defaultOption;
 
     if (option != null) {
-      await option.update(OrderAttributeOptionObject(
-        isDefault: false,
-        // null is settable, should specify the value here
-        modeValue: option.modeValue,
-      ));
+      await option.update(
+        OrderAttributeOptionObject(
+          isDefault: false,
+          // null is settable, should specify the value here
+          modeValue: option.modeValue,
+        ),
+      );
     }
   }
 
   @override
-  OrderAttributeObject toObject() => OrderAttributeObject(
-        id: id,
-        name: name,
-        index: index,
-        mode: mode,
-        options: items.map((e) => e.toObject()),
-      );
+  OrderAttributeObject toObject() =>
+      OrderAttributeObject(id: id, name: name, index: index, mode: mode, options: items.map((e) => e.toObject()));
 }

@@ -27,11 +27,7 @@ class MoreButton extends StatelessWidget {
   final void Function(BuildContext) onPressed;
   final bool backgroundIsImage;
 
-  const MoreButton({
-    super.key,
-    required this.onPressed,
-    this.backgroundIsImage = false,
-  });
+  const MoreButton({super.key, required this.onPressed, this.backgroundIsImage = false});
 
   @override
   Widget build(BuildContext context) {
@@ -67,18 +63,11 @@ class EntryMoreButton extends StatelessWidget {
 class NavToButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const NavToButton({
-    super.key,
-    required this.onPressed,
-  });
+  const NavToButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      tooltip: S.btnNavTo,
-      icon: const Icon(Icons.open_in_new_outlined),
-    );
+    return IconButton(onPressed: onPressed, tooltip: S.btnNavTo, icon: const Icon(Icons.open_in_new_outlined));
   }
 }
 
@@ -86,11 +75,7 @@ class ButtonGroup extends StatelessWidget {
   final List<Widget> buttons;
   final int? spacerAt;
 
-  const ButtonGroup({
-    super.key,
-    required this.buttons,
-    this.spacerAt,
-  });
+  const ButtonGroup({super.key, required this.buttons, this.spacerAt});
 
   @override
   Widget build(BuildContext context) {

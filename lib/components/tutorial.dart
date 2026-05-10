@@ -10,16 +10,11 @@ import 'package:spotlight_ant/spotlight_ant.dart';
 class TutorialWrapper extends StatelessWidget {
   final Widget child;
 
-  const TutorialWrapper({
-    super.key,
-    required this.child,
-  });
+  const TutorialWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return SpotlightShow(
-      child: child,
-    );
+    return SpotlightShow(child: child);
   }
 }
 
@@ -92,14 +87,9 @@ class Tutorial extends StatelessWidget {
       monitorId: monitorVisibility ? 'tutorial.$id' : null,
       onDismiss: _onDismiss,
       onDismissed: action,
-      spotlight: SpotlightConfig(
-        builder: spotlightBuilder,
-        padding: padding,
-      ),
+      spotlight: SpotlightConfig(builder: spotlightBuilder, padding: padding),
       backdrop: const SpotlightBackdropConfig(),
-      action: const SpotlightActionConfig(
-        enabled: [SpotlightAntAction.prev, SpotlightAntAction.next],
-      ),
+      action: const SpotlightActionConfig(enabled: [SpotlightAntAction.prev, SpotlightAntAction.next]),
       contentLayout: preferVertical
           ? const SpotlightContentLayoutConfig(prefer: ContentPreferLayout.vertical)
           : const SpotlightContentLayoutConfig(prefer: ContentPreferLayout.largerRatio),
@@ -107,12 +97,14 @@ class Tutorial extends StatelessWidget {
         fontSize: theme.textTheme.titleMedium!.fontSize,
         child: SizedBox(
           width: 500,
-          child: Column(children: [
-            if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
-            const SizedBox(height: 16),
-            Linkify.fromString(message),
-            if (below != null) below!,
-          ]),
+          child: Column(
+            children: [
+              if (title != null) Text(title!, style: theme.textTheme.headlineMedium!.copyWith(color: Colors.white)),
+              const SizedBox(height: 16),
+              Linkify.fromString(message),
+              if (below != null) below!,
+            ],
+          ),
         ),
       ),
       child: child,
@@ -147,11 +139,7 @@ class MenuTutorial extends StatelessWidget {
       title: S.menuTutorialTitle,
       message: S.menuTutorialContent,
       traceChild: true,
-      below: TutorialCheckboxListTile(
-        key: checkbox,
-        title: S.menuTutorialCreateExample,
-        value: Menu.instance.isEmpty,
-      ),
+      below: TutorialCheckboxListTile(key: checkbox, title: S.menuTutorialCreateExample, value: Menu.instance.isEmpty),
       spotlightBuilder: const SpotlightRectBuilder(),
       action: () async {
         if (checkbox.currentState?.value == true) {

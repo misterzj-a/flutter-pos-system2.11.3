@@ -105,7 +105,4 @@ class CurrencySetting extends Setting<CurrencyTypes> {
   }
 }
 
-enum CurrencyTypes {
-  twd,
-  usd,
-}
+enum CurrencyTypes { twd, usd }

@@ -11,17 +11,14 @@ void main() {
 
       final controller = ImageableManger.instance.create();
 
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData.light(),
-        home: Scaffold(
-          body: ImageableContainer(
-            controller: controller,
-            children: const [
-              Text('Hello World'),
-            ],
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(),
+          home: Scaffold(
+            body: ImageableContainer(controller: controller, children: const [Text('Hello World')]),
           ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       final image = await tester.runAsync(() => controller.toImage(widths: [128]));

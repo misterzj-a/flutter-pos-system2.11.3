@@ -58,13 +58,7 @@ enum Breakpoint {
   }
 
   /// Lookup the value based on the breakpoint
-  T lookup<T>({
-    T? extraLarge,
-    T? large,
-    T? expanded,
-    T? medium,
-    required T compact,
-  }) {
+  T lookup<T>({T? extraLarge, T? large, T? expanded, T? medium, required T compact}) {
     switch (this) {
       case Breakpoint.extraLarge:
         if (extraLarge != null) {

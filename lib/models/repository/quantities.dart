@@ -18,12 +18,7 @@ class Quantities extends ChangeNotifier
 
   @override
   Quantity buildItem(String id, Map<String, Object?> value) {
-    return Quantity.fromObject(
-      QuantityObject.build({
-        'id': id,
-        ...value,
-      }),
-    );
+    return Quantity.fromObject(QuantityObject.build({'id': id, ...value}));
   }
 
   @override

@@ -18,33 +18,33 @@ void main() {
           final now = DateTime.now();
           final today = DateTime(now.year, now.month, now.day);
           final tomorrow = today.add(const Duration(days: 1));
-          final range = DateTimeRange(
-            start: today.subtract(const Duration(days: 7)),
-            end: today,
-          );
+          final range = DateTimeRange(start: today.subtract(const Duration(days: 7)), end: today);
 
           DateTimeRange? selected;
           await tester.pumpWidget(
             MaterialApp.router(
-              routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-                GoRoute(
-                  path: '/',
-                  builder: (context, state) => Scaffold(
-                    body: Builder(builder: (context) {
-                      return TextButton(
-                        child: const Text('go'),
-                        onPressed: () async {
-                          selected = await Navigator.of(context).push<DateTimeRange>(
-                            MaterialPageRoute(
-                              builder: (context) => ChartRangePage(range: range),
-                            ),
+              routerConfig: GoRouter(
+                navigatorKey: Routes.rootNavigatorKey,
+                routes: [
+                  GoRoute(
+                    path: '/',
+                    builder: (context, state) => Scaffold(
+                      body: Builder(
+                        builder: (context) {
+                          return TextButton(
+                            child: const Text('go'),
+                            onPressed: () async {
+                              selected = await Navigator.of(context).push<DateTimeRange>(
+                                MaterialPageRoute(builder: (context) => ChartRangePage(range: range)),
+                              );
+                            },
                           );
                         },
-                      );
-                    }),
+                      ),
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
           );
           await tester.tap(find.text('go'));
@@ -74,9 +74,7 @@ void main() {
             await tester.tap(find.text(S.analysisChartRangeTabName('custom')));
             await tester.pumpAndSettle();
 
-            await tester.tap(
-              find.text(DateTimeRange(start: today, end: tomorrow).format('en')),
-            );
+            await tester.tap(find.text(DateTimeRange(start: today, end: tomorrow).format('en')));
             // No idea why we have to tap twice. I've tried to pumpAndSettle
             // several times, but it still doesn't work
             await tester.pumpAndSettle();

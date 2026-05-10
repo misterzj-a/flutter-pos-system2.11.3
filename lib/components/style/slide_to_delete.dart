@@ -39,10 +39,10 @@ class SlideToDelete<T> extends StatelessWidget {
       confirmDismiss: warningContent == null && warningContentBuilder == null
           ? null
           : (direction) => DeleteDialog.show(
-                context,
-                deleteCallback: deleteCallback,
-                content: warningContent ?? warningContentBuilder!(context),
-              ),
+              context,
+              deleteCallback: deleteCallback,
+              content: warningContent ?? warningContentBuilder!(context),
+            ),
       child: child,
     );
   }

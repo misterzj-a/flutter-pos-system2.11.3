@@ -41,10 +41,7 @@ void main() {
   Widget buildApp(List<FormattableModel> ables, [PreviewFormatter? formatter]) {
     return MaterialApp(
       home: Scaffold(
-        body: PreviewPageWrapper(
-          models: ables,
-          formatter: formatter ?? proxyFormatter,
-        ),
+        body: PreviewPageWrapper(models: ables, formatter: formatter ?? proxyFormatter),
       ),
     );
   }
@@ -60,10 +57,11 @@ void main() {
         });
 
         testWidgets('error data', (tester) async {
-          await tester.pumpWidget(buildApp(
-            [FormattableModel.stock],
-            (FormattableModel able) => [FormattedItem(error: FormatterValidateError('TestError', 'RawData'))],
-          ));
+          await tester.pumpWidget(
+            buildApp([
+              FormattableModel.stock,
+            ], (FormattableModel able) => [FormattedItem(error: FormatterValidateError('TestError', 'RawData'))]),
+          );
           await tester.pumpAndSettle();
 
           expect(find.text('RawData'), findsOneWidget);
@@ -80,10 +78,7 @@ void main() {
         await tester.pump();
 
         void checkName(String text, String status) {
-          expect(
-            find.text(text + S.transitImportColumnStatus(status), findRichText: true),
-            findsOneWidget,
-          );
+          expect(find.text(text + S.transitImportColumnStatus(status), findRichText: true), findsOneWidget);
         }
 
         checkName('p1', 'staged');
@@ -116,16 +111,17 @@ void main() {
           },
         );
 
-        await tester.pumpWidget(MaterialApp(
-          home: Scaffold(
-            body: Builder(builder: (context) {
-              return TextButton(
-                onPressed: () => Navigator.of(context).push(route),
-                child: const Text('Go'),
-              );
-            }),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return TextButton(onPressed: () => Navigator.of(context).push(route), child: const Text('Go'));
+                },
+              ),
+            ),
           ),
-        ));
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.text('Go'));
         await tester.pumpAndSettle();
@@ -232,10 +228,7 @@ class _ImportFromRepo {
 
     final o1 = OrderAttributeOption(id: 'o1', name: 'o1', modeValue: 1);
     final o2 = OrderAttributeOption(id: 'o2', name: 'o2', isDefault: true);
-    final cs1 = OrderAttribute(id: 'oa1', name: 'oa1', options: {
-      'o1': o1,
-      'o2': o2,
-    });
+    final cs1 = OrderAttribute(id: 'oa1', name: 'oa1', options: {'o1': o1, 'o2': o2});
     cs1.prepareItem();
     OrderAttributes.instance.replaceItems({'oa1': cs1});
 
@@ -265,10 +258,7 @@ class _ImportFromRepo {
     final expected = findPlainTextFormatter(model).getRows();
     switchBack();
 
-    expect(
-      actual.map((e) => e.join(",")).join("\n"),
-      equals(expected.map((e) => e.join(",")).join("\n")),
-    );
+    expect(actual.map((e) => e.join(",")).join("\n"), equals(expected.map((e) => e.join(",")).join("\n")));
   }
 
   List<FormattedItem>? formatter(FormattableModel model) {

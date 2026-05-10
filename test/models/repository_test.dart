@@ -42,7 +42,7 @@ void main() {
 
       test('Cashier', () async {
         final dirtyData = [
-          {'count': '', 'unit': 2}
+          {'count': '', 'unit': 2},
         ];
         CurrencySetting.instance.unitList = [1, 2, 3];
 
@@ -52,9 +52,7 @@ void main() {
         await cashier.setCurrent(dirtyData);
         verify(storage.add(any, any, any));
 
-        when(storage.get(any, any)).thenAnswer((_) => Future.value({
-              'default': dirtyData,
-            }));
+        when(storage.get(any, any)).thenAnswer((_) => Future.value({'default': dirtyData}));
         await cashier.reset();
 
         await cashier.setFavorite(dirtyData);
@@ -67,7 +65,7 @@ void main() {
         CurrencySetting.instance.unitList = [1];
 
         await cashier.setCurrent([
-          {'unit': 0}
+          {'unit': 0},
         ]);
 
         expect(cashier.currentUnits.first.unit, 1);
@@ -165,16 +163,7 @@ void main() {
           Period(unit: PeriodUnit.xDayOfEachMonth, values: [1]),
           Period(unit: PeriodUnit.xDayOfEachMonth, values: [1, 15]),
         ];
-        final lasts = [
-          DateTime(2025, 10, 2),
-          today,
-          DateTime(2025, 6, 2),
-          today,
-          today,
-          today,
-          today,
-          today,
-        ];
+        final lasts = [DateTime(2025, 10, 2), today, DateTime(2025, 6, 2), today, today, today, today, today];
         final nextDates = [
           DateTime(2025, 10, 8),
           DateTime(2026, 4, 24),
@@ -189,8 +178,11 @@ void main() {
         for (var i = 0; i < periods.length; i++) {
           final period = periods[i];
           final nextDate = period.nextDate(lasts[i], today);
-          expect(nextDate, nextDates[i],
-              reason: 'Period: $period, Last: ${lasts[i]}, expected: ${nextDates[i]}, actual: $nextDate');
+          expect(
+            nextDate,
+            nextDates[i],
+            reason: 'Period: $period, Last: ${lasts[i]}, expected: ${nextDates[i]}, actual: $nextDate',
+          );
         }
       });
     });

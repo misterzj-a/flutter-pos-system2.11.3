@@ -27,14 +27,16 @@ void showSnackBar(
 
   if (state != null) {
     state.clearSnackBars();
-    state.showSnackBar(SnackBar(
-      showCloseIcon: true,
-      // make floating button below
-      behavior: SnackBarBehavior.floating,
-      content: Text(message),
-      width: Routes.homeMode.value.isMobile() ? null : 600,
-      action: action,
-    ));
+    state.showSnackBar(
+      SnackBar(
+        showCloseIcon: true,
+        // make floating button below
+        behavior: SnackBarBehavior.floating,
+        content: Text(message),
+        width: Routes.homeMode.value.isMobile() ? null : 600,
+        action: action,
+      ),
+    );
   }
 }
 
@@ -105,10 +107,7 @@ void showMoreInfoSnackBar(
   final ctx = context ?? key?.currentContext;
   final action = content == null || ctx == null
       ? null
-      : SnackBarAction(
-          label: S.actMoreInfo,
-          onPressed: () => showMoreInfoDialog(ctx, message, content),
-        );
+      : SnackBarAction(label: S.actMoreInfo, onPressed: () => showMoreInfoDialog(ctx, message, content));
 
   showSnackBar(message, action: action, context: context, key: key);
 }
@@ -128,23 +127,13 @@ void showMoreInfoDialog(BuildContext context, String title, Widget body) {
   );
 }
 
-void _prettierError(
-  Object e, {
-  BuildContext? context,
-  GlobalKey<ScaffoldMessengerState>? key,
-  String? moreMessage,
-}) {
+void _prettierError(Object e, {BuildContext? context, GlobalKey<ScaffoldMessengerState>? key, String? moreMessage}) {
   void show(String msg, [String? more]) {
     if (kDebugMode) {
       print('snackbar debug error: $msg');
       print('snackbar debug stack: ${e is Error ? e.stackTrace : null}');
     }
-    showMoreInfoSnackBar(
-      msg,
-      more == null ? null : Linkify.fromString(more),
-      context: context,
-      key: key,
-    );
+    showMoreInfoSnackBar(msg, more == null ? null : Linkify.fromString(more), context: context, key: key);
   }
 
   if (e is PlatformException) {

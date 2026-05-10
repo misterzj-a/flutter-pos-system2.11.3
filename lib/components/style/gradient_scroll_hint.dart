@@ -6,11 +6,7 @@ class GradientScrollHint extends StatelessWidget {
 
   final bool isDialog;
 
-  const GradientScrollHint({
-    super.key,
-    this.direction = Axis.horizontal,
-    this.isDialog = false,
-  });
+  const GradientScrollHint({super.key, this.direction = Axis.horizontal, this.isDialog = false});
 
   @override
   Widget build(BuildContext context) {

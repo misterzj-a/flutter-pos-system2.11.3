@@ -22,18 +22,23 @@ void main() {
     testWidgets('Add attribute', (tester) async {
       final attrs = OrderAttributes()..replaceItems({});
 
-      await tester.pumpWidget(ChangeNotifierProvider.value(
-        value: attrs,
-        child: MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const Scaffold(body: OrderAttributePage()),
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: attrs,
+          child: MaterialApp.router(
+            routerConfig: GoRouter(
+              navigatorKey: Routes.rootNavigatorKey,
+              routes: [
+                GoRoute(
+                  path: '/',
+                  builder: (_, __) => const Scaffold(body: OrderAttributePage()),
+                ),
+                ...Routes.getDesiredRoute(0).routes,
+              ],
             ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
+          ),
         ),
-      ));
+      );
 
       await tester.tap(find.byKey(const Key('empty_body')));
       await tester.pumpAndSettle();
@@ -54,57 +59,63 @@ void main() {
       expect(attr.index, equals(1));
       expect(attr.mode, equals(OrderAttributeMode.statOnly));
 
-      verify(storage.add(
-        Stores.orderAttributes,
-        argThat(equals(id)),
-        argThat(equals({
-          'name': 'attr-1',
-          'index': 1,
-          'mode': 0,
-          'options': {},
-        })),
-      ));
+      verify(
+        storage.add(
+          Stores.orderAttributes,
+          argThat(equals(id)),
+          argThat(equals({'name': 'attr-1', 'index': 1, 'mode': 0, 'options': {}})),
+        ),
+      );
     });
 
     Future<void> buildAppWithAttributes(WidgetTester tester) async {
-      final attr1 = OrderAttribute(id: '1', name: 'cs-1', index: 1, mode: OrderAttributeMode.changePrice, options: {
-        '1': OrderAttributeOption(id: '1', name: 'cso-1', index: 1, isDefault: true, modeValue: 10),
-        '2': OrderAttributeOption(id: '2', name: 'cso-2', index: 2, modeValue: -10),
-        '3': OrderAttributeOption(id: '3', name: 'cso-3', index: 3, modeValue: 0),
-        '4': OrderAttributeOption(id: '4', name: 'cso-4', index: 4),
-      })
-        ..prepareItem();
-      final attr2 = OrderAttribute(id: '2', name: 'cs-2', index: 2, mode: OrderAttributeMode.changeDiscount, options: {
-        '5': OrderAttributeOption(id: '5', name: 'cso-5', modeValue: 110),
-        '6': OrderAttributeOption(id: '6', name: 'cso-6', modeValue: 60),
-        '7': OrderAttributeOption(id: '7', name: 'cso-7', modeValue: 55),
-      })
-        ..prepareItem();
+      final attr1 = OrderAttribute(
+        id: '1',
+        name: 'cs-1',
+        index: 1,
+        mode: OrderAttributeMode.changePrice,
+        options: {
+          '1': OrderAttributeOption(id: '1', name: 'cso-1', index: 1, isDefault: true, modeValue: 10),
+          '2': OrderAttributeOption(id: '2', name: 'cso-2', index: 2, modeValue: -10),
+          '3': OrderAttributeOption(id: '3', name: 'cso-3', index: 3, modeValue: 0),
+          '4': OrderAttributeOption(id: '4', name: 'cso-4', index: 4),
+        },
+      )..prepareItem();
+      final attr2 = OrderAttribute(
+        id: '2',
+        name: 'cs-2',
+        index: 2,
+        mode: OrderAttributeMode.changeDiscount,
+        options: {
+          '5': OrderAttributeOption(id: '5', name: 'cso-5', modeValue: 110),
+          '6': OrderAttributeOption(id: '6', name: 'cso-6', modeValue: 60),
+          '7': OrderAttributeOption(id: '7', name: 'cso-7', modeValue: 55),
+        },
+      )..prepareItem();
       final attrs = OrderAttributes()
-        ..replaceItems({
-          '1': attr1,
-          '2': attr2,
-          '3': OrderAttribute(id: '3', name: 'cs-3', index: 3),
-        });
+        ..replaceItems({'1': attr1, '2': attr2, '3': OrderAttribute(id: '3', name: 'cs-3', index: 3)});
 
       when(cache.get(any)).thenReturn(null);
 
-      await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: attrs),
-        ],
-        child: MaterialApp.router(
-          routerConfig: GoRouter(navigatorKey: Routes.rootNavigatorKey, routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const Scaffold(body: OrderAttributePage()),
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [ChangeNotifierProvider.value(value: attrs)],
+          child: MaterialApp.router(
+            routerConfig: GoRouter(
+              navigatorKey: Routes.rootNavigatorKey,
+              routes: [
+                GoRoute(
+                  path: '/',
+                  builder: (_, __) => const Scaffold(body: OrderAttributePage()),
+                ),
+                ...Routes.getDesiredRoute(0).routes,
+              ],
             ),
-            ...Routes.getDesiredRoute(0).routes,
-          ]),
-          darkTheme: ThemeData.dark(),
-          themeMode: ThemeMode.dark,
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.dark,
+          ),
         ),
-      ));
+      );
     }
 
     testWidgets('Edit attribute', (tester) async {
@@ -136,17 +147,21 @@ void main() {
       expect(attr.mode, equals(OrderAttributeMode.values[2]));
       expect(attr.items.every((option) => option.modeValue == null), isTrue);
 
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals({
-          '1.name': 'new',
-          '1.options.1.modeValue': null,
-          '1.options.2.modeValue': null,
-          '1.options.3.modeValue': null,
-          '1.options.4.modeValue': null,
-          '1.mode': 2,
-        })),
-      ));
+      verify(
+        storage.set(
+          Stores.orderAttributes,
+          argThat(
+            equals({
+              '1.name': 'new',
+              '1.options.1.modeValue': null,
+              '1.options.2.modeValue': null,
+              '1.options.3.modeValue': null,
+              '1.options.4.modeValue': null,
+              '1.mode': 2,
+            }),
+          ),
+        ),
+      );
     });
 
     testWidgets('Delete attribute', (tester) async {
@@ -164,10 +179,7 @@ void main() {
 
       expect(find.byKey(const Key('order_attributes.1')), findsNothing);
       expect(OrderAttributes.instance.length, equals(2));
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals({'1': null})),
-      ));
+      verify(storage.set(Stores.orderAttributes, argThat(equals({'1': null}))));
     });
 
     testWidgets('Reorder attributes', (tester) async {
@@ -177,10 +189,7 @@ void main() {
       await tester.pumpAndSettle();
       final rect = tester.getRect(find.byKey(const Key('reorder.0')));
 
-      await tester.drag(
-        find.byIcon(Icons.reorder_outlined).first,
-        Offset(0, rect.height + rect.top),
-      );
+      await tester.drag(find.byIcon(Icons.reorder_outlined).first, Offset(0, rect.height + rect.top));
       await tester.tap(find.byKey(const Key('reorder.save')));
       await tester.pumpAndSettle();
 
@@ -192,10 +201,7 @@ void main() {
       expect(itemList[1].id, equals('1'));
       expect(itemList[2].id, equals('3'));
 
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals({'2.index': 1, '1.index': 2})),
-      ));
+      verify(storage.set(Stores.orderAttributes, argThat(equals({'2.index': 1, '1.index': 2}))));
     });
 
     testWidgets('Add option', (tester) async {
@@ -207,8 +213,10 @@ void main() {
       /// show [OrderAttributeOptionMode.changePrice] modeValue
       await tester.tap(find.byKey(const Key('order_attributes.1.2')));
       await tester.pumpAndSettle();
-      expect(tester.widget<TextFormField>(find.byKey(const Key('order_attribute_option.modeValue'))).controller?.text,
-          equals('-10'));
+      expect(
+        tester.widget<TextFormField>(find.byKey(const Key('order_attribute_option.modeValue'))).controller?.text,
+        equals('-10'),
+      );
       await tester.tap(find.byKey(const Key('pop')).last);
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('order_attributes.1.add')));
@@ -237,21 +245,17 @@ void main() {
       expect(find.byKey(Key('order_attributes.1.$id')), findsOneWidget);
       expect(OrderAttributes.instance.items.first.length, equals(5));
 
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals({'1.options.1.isDefault': false})),
-      ));
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals({
-          '1.options.$id': {
-            'name': 'cso-new',
-            'index': 5,
-            'isDefault': true,
-            'modeValue': 10,
-          }
-        })),
-      ));
+      verify(storage.set(Stores.orderAttributes, argThat(equals({'1.options.1.isDefault': false}))));
+      verify(
+        storage.set(
+          Stores.orderAttributes,
+          argThat(
+            equals({
+              '1.options.$id': {'name': 'cso-new', 'index': 5, 'isDefault': true, 'modeValue': 10},
+            }),
+          ),
+        ),
+      );
     });
 
     testWidgets('Edit option', (tester) async {
@@ -289,14 +293,12 @@ void main() {
       expect(option.isDefault, isTrue);
       expect(option.modeValue, isZero);
 
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals({
-          '2.options.7.name': 'cso-new',
-          '2.options.7.isDefault': true,
-          '2.options.7.modeValue': 0,
-        })),
-      ));
+      verify(
+        storage.set(
+          Stores.orderAttributes,
+          argThat(equals({'2.options.7.name': 'cso-new', '2.options.7.isDefault': true, '2.options.7.modeValue': 0})),
+        ),
+      );
     });
 
     testWidgets('Delete option', (tester) async {
@@ -317,10 +319,7 @@ void main() {
       expect(attr.length, equals(3));
       expect(attr.defaultOption, isNull);
 
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals({'1.options.1': null})),
-      ));
+      verify(storage.set(Stores.orderAttributes, argThat(equals({'1.options.1': null}))));
     });
 
     testWidgets('Reorder options', (tester) async {
@@ -346,16 +345,12 @@ void main() {
       expect(itemList[2].id, equals('1'));
       expect(itemList[3].id, equals('4'));
 
-      verify(storage.set(
-        Stores.orderAttributes,
-        argThat(equals(
-          {
-            '1.options.2.index': 1,
-            '1.options.3.index': 2,
-            '1.options.1.index': 3,
-          },
-        )),
-      ));
+      verify(
+        storage.set(
+          Stores.orderAttributes,
+          argThat(equals({'1.options.2.index': 1, '1.options.3.index': 2, '1.options.1.index': 3})),
+        ),
+      );
     });
 
     setUpAll(() {

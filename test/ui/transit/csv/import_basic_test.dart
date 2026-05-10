@@ -57,13 +57,15 @@ void main() {
 
     testWidgets('import all', (tester) async {
       final qh = getAllFormattedFieldHeaders(FormattableModel.quantities).first.join(',');
-      final data = getAllFormattedFieldHeaders(null).map((h) {
-        final header = h.join(',');
-        if (header == qh) {
-          return '$header\nq1,1';
-        }
-        return header;
-      }).join('\n\n');
+      final data = getAllFormattedFieldHeaders(null)
+          .map((h) {
+            final header = h.join(',');
+            if (header == qh) {
+              return '$header\nq1,1';
+            }
+            return header;
+          })
+          .join('\n\n');
 
       final picker = mockFilePicker();
       mockFilePick(picker, bytes: utf8.encode(data));

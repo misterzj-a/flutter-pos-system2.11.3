@@ -30,29 +30,31 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
     final bp = Breakpoint.find(width: MediaQuery.sizeOf(context).width);
     return ResponsiveDialog(
       scrollable: false,
-      title: Row(children: [
-        Text(MaterialLocalizations.of(context).unspecifiedDateRange),
-        bp <= Breakpoint.medium
-            ? const Spacer()
-            : Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-                  child: ListenableBuilder(
-                    listenable: _controller,
-                    builder: (context, child) {
-                      return SegmentedButton<int>(
-                        selected: {_controller.index},
-                        onSelectionChanged: (value) => _controller.index = value.first,
-                        segments: [
-                          for (final tab in _TabType.values)
-                            ButtonSegment(value: tab.index, label: Text(S.analysisChartRangeTabName(tab.name))),
-                        ],
-                      );
-                    },
+      title: Row(
+        children: [
+          Text(MaterialLocalizations.of(context).unspecifiedDateRange),
+          bp <= Breakpoint.medium
+              ? const Spacer()
+              : Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+                    child: ListenableBuilder(
+                      listenable: _controller,
+                      builder: (context, child) {
+                        return SegmentedButton<int>(
+                          selected: {_controller.index},
+                          onSelectionChanged: (value) => _controller.index = value.first,
+                          segments: [
+                            for (final tab in _TabType.values)
+                              ButtonSegment(value: tab.index, label: Text(S.analysisChartRangeTabName(tab.name))),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-      ]),
+        ],
+      ),
       action: TextButton(
         onPressed: () {
           if (context.mounted && context.canPop()) {
@@ -67,25 +69,26 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
 
   Widget _buildContent(Breakpoint bp) {
     if (bp <= Breakpoint.medium) {
-      return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        TabBar(
-          controller: _controller,
-          tabs: [
-            for (final tab in _TabType.values)
-              Tab(
-                child: Text(
-                  S.analysisChartRangeTabName(tab.name),
-                  softWrap: true,
-                ),
-              ),
-          ],
-        ),
-        Expanded(
-          child: TabBarView(controller: _controller, children: [
-            for (final tab in [_TabType.day, _TabType.week, _TabType.month, _TabType.custom]) _buildTab(tab),
-          ]),
-        ),
-      ]);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TabBar(
+            controller: _controller,
+            tabs: [
+              for (final tab in _TabType.values)
+                Tab(child: Text(S.analysisChartRangeTabName(tab.name), softWrap: true)),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _controller,
+              children: [
+                for (final tab in [_TabType.day, _TabType.week, _TabType.month, _TabType.custom]) _buildTab(tab),
+              ],
+            ),
+          ),
+        ],
+      );
     }
 
     return SizedBox(
@@ -105,22 +108,23 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
   Widget _buildTab(_TabType tab) {
     return switch (tab) {
       _TabType.day || _TabType.week || _TabType.month => ListView(
-          children: [
-            for (final e in ranges[tab]!.entries)
-              RadioListTile(
-                title: Text(e.key),
-                // TODO: change to RadioGroup when it is stable, see
-                // https://github.com/flutter/flutter/issues/175258
-                // ignore: deprecated_member_use
-                groupValue: select,
-                // ignore: deprecated_member_use
-                onChanged: (value) => setState(() => select = value!),
-                subtitle: Text(e.value.format(S.localeName)),
-                value: e.value,
-              ),
-          ],
-        ),
-      _TabType.custom => ListView(children: [
+        children: [
+          for (final e in ranges[tab]!.entries)
+            RadioListTile(
+              title: Text(e.key),
+              // TODO: change to RadioGroup when it is stable, see
+              // https://github.com/flutter/flutter/issues/175258
+              // ignore: deprecated_member_use
+              groupValue: select,
+              // ignore: deprecated_member_use
+              onChanged: (value) => setState(() => select = value!),
+              subtitle: Text(e.value.format(S.localeName)),
+              value: e.value,
+            ),
+        ],
+      ),
+      _TabType.custom => ListView(
+        children: [
           ListTile(
             title: Text(select.format(S.localeName)),
             onTap: () async {
@@ -131,7 +135,8 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
               }
             },
           ),
-        ]),
+        ],
+      ),
     };
   }
 
@@ -145,46 +150,20 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
     final thisMonth = DateTime(today.year, today.month);
     ranges = {
       _TabType.day: {
-        S.analysisChartRangeYesterday: DateTimeRange(
-          start: today.subtract(const Duration(days: 1)),
-          end: today,
-        ),
-        S.analysisChartRangeToday: DateTimeRange(
-          start: today,
-          end: today.add(const Duration(days: 1)),
-        ),
+        S.analysisChartRangeYesterday: DateTimeRange(start: today.subtract(const Duration(days: 1)), end: today),
+        S.analysisChartRangeToday: DateTimeRange(start: today, end: today.add(const Duration(days: 1))),
       },
       _TabType.week: {
-        S.analysisChartRangeLast7Days: DateTimeRange(
-          start: today.subtract(const Duration(days: 7)),
-          end: today,
-        ),
-        S.analysisChartRangeThisWeek: DateTimeRange(
-          start: thisWeek,
-          end: thisWeek.add(const Duration(days: 7)),
-        ),
-        S.analysisChartRangeLastWeek: DateTimeRange(
-          start: thisWeek.subtract(const Duration(days: 7)),
-          end: thisWeek,
-        ),
+        S.analysisChartRangeLast7Days: DateTimeRange(start: today.subtract(const Duration(days: 7)), end: today),
+        S.analysisChartRangeThisWeek: DateTimeRange(start: thisWeek, end: thisWeek.add(const Duration(days: 7))),
+        S.analysisChartRangeLastWeek: DateTimeRange(start: thisWeek.subtract(const Duration(days: 7)), end: thisWeek),
       },
       _TabType.month: {
-        S.analysisChartRangeLast30Days: DateTimeRange(
-          start: today.subtract(const Duration(days: 30)),
-          end: today,
-        ),
-        S.analysisChartRangeThisMonth: DateTimeRange(
-          start: thisMonth,
-          end: DateTime(now.year, now.month + 1),
-        ),
-        S.analysisChartRangeLastMonth: DateTimeRange(
-          start: DateTime(now.year, now.month - 1),
-          end: thisMonth,
-        ),
+        S.analysisChartRangeLast30Days: DateTimeRange(start: today.subtract(const Duration(days: 30)), end: today),
+        S.analysisChartRangeThisMonth: DateTimeRange(start: thisMonth, end: DateTime(now.year, now.month + 1)),
+        S.analysisChartRangeLastMonth: DateTimeRange(start: DateTime(now.year, now.month - 1), end: thisMonth),
       },
-      _TabType.custom: {
-        '': select,
-      },
+      _TabType.custom: {'': select},
     };
 
     final tab = ranges.entries.firstWhereOrNull((e) => e.value.containsValue(select))?.key ?? _TabType.custom;
@@ -194,9 +173,4 @@ class _ChartRangePageState extends State<ChartRangePage> with SingleTickerProvid
   }
 }
 
-enum _TabType {
-  day,
-  week,
-  month,
-  custom;
-}
+enum _TabType { day, week, month, custom }

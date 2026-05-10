@@ -12,10 +12,7 @@ void main() {
     });
 
     test('#toUTC', () {
-      expect(
-        Util.toUTC(now: DateTime.utc(2021, 6, 14, 2, 59, 33)),
-        equals(1623639573),
-      );
+      expect(Util.toUTC(now: DateTime.utc(2021, 6, 14, 2, 59, 33)), equals(1623639573));
 
       final date = Util.toUTC(hour: 0);
       final utc = DateTime.now().timeZoneOffset.inSeconds + date;
@@ -45,9 +42,7 @@ void main() {
       final f = Util.handleSnapshot((context, data) => const SizedBox.shrink(), onError: (err) => gotten = err);
       const err = AsyncSnapshot<String>.withError(ConnectionState.done, 'test');
 
-      await tester.pumpWidget(MaterialApp(
-        home: Builder(builder: (BuildContext context) => f(context, err)),
-      ));
+      await tester.pumpWidget(MaterialApp(home: Builder(builder: (BuildContext context) => f(context, err))));
 
       expect(find.text('test'), findsOneWidget);
       expect(gotten, equals('test'));

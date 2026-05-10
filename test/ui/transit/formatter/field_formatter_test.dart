@@ -58,37 +58,19 @@ void main() {
         }
 
         // should not changed
-        verifyProd(
-          Menu.instance.getProduct('pA')!,
-          ['normal', 'pA', 'normal'],
-          [0, 2, 2],
-        );
+        verifyProd(Menu.instance.getProduct('pA')!, ['normal', 'pA', 'normal'], [0, 2, 2]);
         expect(Menu.instance.getProduct('pA2')!.length, equals(3));
 
         // product 1
-        verifyProd(
-          items[0].item!,
-          ['normal', 'pB', 'staged', 'i0', 'stagedIng'],
-          [1, 1, 1],
-        );
+        verifyProd(items[0].item!, ['normal', 'pB', 'staged', 'i0', 'stagedIng'], [1, 1, 1]);
 
         // product 2
-        verifyProd(
-          items[1].item!,
-          ['staged', 'pA', 'updated'],
-          [0, 1, 1],
-        );
+        verifyProd(items[1].item!, ['staged', 'pA', 'updated'], [0, 1, 1]);
 
         expect(items[2].hasError, isTrue);
 
         final p4 = items[3].item!;
-        void verifyIng(
-          String iName,
-          List<int> values,
-          String iStatus, [
-          String? qName,
-          String? qStatus,
-        ]) {
+        void verifyIng(String iName, List<int> values, String iStatus, [String? qName, String? qStatus]) {
           final ing = p4.getItemByName(iName)!;
           expect(ing.statusName, iStatus);
           expect(ing.amount, equals(values[0]));
@@ -144,39 +126,47 @@ void main() {
         stock.replaceItems({'i1': i1, 'i2': i2, 'i5': i5});
         quantities.replaceItems({'q1': q1});
         menu.replaceItems({
-          'A': Catalog(id: 'A', name: 'A', products: {
-            'pA': Product(id: 'pA', name: 'pA', price: 2, cost: 2),
-            'pA2': Product(id: 'pA2', name: 'pA2', ingredients: {
-              'pAi1': ProductIngredient(
-                id: 'pAi1',
-                amount: 2,
-                ingredient: i1,
-                quantities: {
-                  'pAq1': ProductQuantity(
-                    id: 'pAq1',
+          'A': Catalog(
+            id: 'A',
+            name: 'A',
+            products: {
+              'pA': Product(id: 'pA', name: 'pA', price: 2, cost: 2),
+              'pA2': Product(
+                id: 'pA2',
+                name: 'pA2',
+                ingredients: {
+                  'pAi1': ProductIngredient(
+                    id: 'pAi1',
                     amount: 2,
-                    additionalCost: 2,
-                    additionalPrice: 2,
-                    quantity: q1,
+                    ingredient: i1,
+                    quantities: {
+                      'pAq1': ProductQuantity(
+                        id: 'pAq1',
+                        amount: 2,
+                        additionalCost: 2,
+                        additionalPrice: 2,
+                        quantity: q1,
+                      ),
+                    },
+                  ),
+                  'pAi2': ProductIngredient(id: 'pAi2', ingredient: i2),
+                  'pAi3': ProductIngredient(
+                    id: 'pAi3',
+                    ingredient: i5,
+                    quantities: {
+                      'pAq2': ProductQuantity(
+                        id: 'pAq2',
+                        amount: 1,
+                        additionalCost: 1,
+                        additionalPrice: 1,
+                        quantity: q1,
+                      ),
+                    },
                   ),
                 },
               ),
-              'pAi2': ProductIngredient(id: 'pAi2', ingredient: i2),
-              'pAi3': ProductIngredient(
-                id: 'pAi3',
-                ingredient: i5,
-                quantities: {
-                  'pAq2': ProductQuantity(
-                    id: 'pAq2',
-                    amount: 1,
-                    additionalCost: 1,
-                    additionalPrice: 1,
-                    quantity: q1,
-                  ),
-                },
-              ),
-            }),
-          }),
+            },
+          ),
         });
         for (var c in menu.items) {
           c.prepareItem();
@@ -325,13 +315,7 @@ void main() {
         // should not changed
         expect(OrderAttributes.instance.getItem('c1')!.length, equals(1));
 
-        void verifyItem(
-          int index,
-          String name,
-          String mode,
-          int l,
-          String status,
-        ) {
+        void verifyItem(int index, String name, String mode, int l, String status) {
           final item = items[index].item!;
           expect(item.name, equals(name));
           expect(item.mode.name, equals(mode));
@@ -351,9 +335,11 @@ void main() {
       setUp(() {
         final attrs = OrderAttributes();
 
-        final c1 = OrderAttribute(id: 'c1', name: 'c1', options: {
-          'co1': OrderAttributeOption(id: 'co1', name: 'co1'),
-        });
+        final c1 = OrderAttribute(
+          id: 'c1',
+          name: 'c1',
+          options: {'co1': OrderAttributeOption(id: 'co1', name: 'co1')},
+        );
         final c2 = OrderAttribute(id: 'c2', name: 'c2');
         attrs.replaceItems({'c1': c1, 'c2': c2});
       });

@@ -98,21 +98,13 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                           SizedBox(
                             width: height,
                             height: height,
-                            child: SvgPicture.asset(
-                              'assets/google_signin_button.svg',
-                              width: size,
-                              height: size,
-                            ),
+                            child: SvgPicture.asset('assets/google_signin_button.svg', width: size, height: size),
                           ),
                           Expanded(
                             child: Text(
                               S.btnSignInWithGoogle,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                height: 1.1,
-                                color: fontColor,
-                                fontSize: size,
-                              ),
+                              style: TextStyle(height: 1.1, color: fontColor, fontSize: size),
                             ),
                           ),
                         ],
@@ -124,10 +116,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
               Positioned.fill(
                 child: Material(
                   color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    onTap: isLoading ? null : signIn,
-                  ),
+                  child: InkWell(borderRadius: BorderRadius.circular(borderRadius), onTap: isLoading ? null : signIn),
                 ),
               ),
               if (isLoading)
@@ -136,10 +125,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
                     child: SizedBox(
                       width: size,
                       height: size,
-                      child: CircularProgressIndicator.adaptive(
-                        value: size,
-                        strokeWidth: borderWidth * 2,
-                      ),
+                      child: CircularProgressIndicator.adaptive(value: size, strokeWidth: borderWidth * 2),
                     ),
                   ),
                 ),
@@ -149,10 +135,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
         if (error != null)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Text(
-              error!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+            child: Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
       ],
     );
@@ -187,6 +170,6 @@ class User {
   final bool notSignedIn;
 
   User({String? displayName, this.user})
-      : _displayName = displayName,
-        notSignedIn = user == null && displayName == null;
+    : _displayName = displayName,
+      notSignedIn = user == null && displayName == null;
 }

@@ -27,10 +27,7 @@ class StashedOrderListView extends StatelessWidget {
       loader: (int offset) {
         return StashedOrders.instance.getItems(offset: offset);
       },
-      prototypeItem: _buildTile(
-        context,
-        OrderObject(createdAt: DateTime.now()),
-      ),
+      prototypeItem: _buildTile(context, OrderObject(createdAt: DateTime.now())),
       metricsLoader: StashedOrders.instance.getMetrics,
       metricsBuilder: (metrics) {
         return Center(child: Text(S.totalCount(metrics.count)));
@@ -44,8 +41,8 @@ class StashedOrderListView extends StatelessWidget {
     final n = DateTime.now();
     final title = order.createdAt.isBefore(DateTime(n.year, n.month, n.day))
         ? DateFormat.MMMd(S.localeName).format(order.createdAt) +
-            MetaBlock.string +
-            DateFormat.Hm(S.localeName).format(order.createdAt)
+              MetaBlock.string +
+              DateFormat.Hm(S.localeName).format(order.createdAt)
         : DateFormat.Hms(S.localeName).format(order.createdAt);
 
     final products = order.products
@@ -107,11 +104,7 @@ class StashedOrderListView extends StatelessWidget {
     }
   }
 
-  Future<bool?> _act(
-    _Action act,
-    BuildContext context,
-    OrderObject order,
-  ) async {
+  Future<bool?> _act(_Action act, BuildContext context, OrderObject order) async {
     switch (act) {
       case _Action.restore:
         bool ok = true;
@@ -145,33 +138,20 @@ class StashedOrderListView extends StatelessWidget {
     return true;
   }
 
-  Future<void> _checkout(
-    BuildContext context,
-    OrderObject order,
-  ) async {
+  Future<void> _checkout(BuildContext context, OrderObject order) async {
     final cart = Cart(name: 'stashed')..restore(order);
     final price = ValueNotifier<num>(cart.price);
     final paid = ValueNotifier<num>(price.value);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => SimpleDialog(
-        insetPadding: const EdgeInsets.symmetric(
-          horizontal: 4.0,
-          vertical: 24.0,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 8.0,
-        ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 24.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
         semanticLabel: S.orderCheckoutStashDialogCalculator,
         children: [
           SizedBox(
             height: 360.0,
-            child: CheckoutCashierCalculator(
-              onSubmit: () => Navigator.of(context).pop(true),
-              price: price,
-              paid: paid,
-            ),
+            child: CheckoutCashierCalculator(onSubmit: () => Navigator.of(context).pop(true), price: price, paid: paid),
           ),
         ],
       ),
@@ -203,8 +183,4 @@ class StashedOrderListView extends StatelessWidget {
   }
 }
 
-enum _Action {
-  delete,
-  restore,
-  checkout,
-}
+enum _Action { delete, restore, checkout }

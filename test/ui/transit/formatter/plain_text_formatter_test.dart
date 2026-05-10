@@ -22,10 +22,7 @@ import '../../../test_helpers/translator.dart';
 
 void main() {
   group('Plain Text Formatter', () {
-    List<FormattedItem<T>> format<T extends Model>(
-      FormattableModel able,
-      String expected,
-    ) {
+    List<FormattedItem<T>> format<T extends Model>(FormattableModel able, String expected) {
       final formatter = findPlainTextFormatter(able);
       expect(formatter.getHeader(), isEmpty);
       final text = formatter.getRows().map((row) => row.join('\n')).join('\n\n');
@@ -52,51 +49,50 @@ void main() {
       stock.replaceItems({'i1': i1, 'i2': i2, 'i5': i5});
       quantities.replaceItems({'q1': q1, 'q2': q2});
       menu.replaceItems({
-        'A': Catalog(id: 'A', name: 'A', products: {
-          'pA': Product(id: 'pA', name: 'pA', index: 1, price: 2, cost: 2),
-          'pA2': Product(id: 'pA2', name: 'pA2', index: 2, ingredients: {
-            'pAi1': ProductIngredient(
-              id: 'pAi1',
-              amount: 2,
-              ingredient: i1,
-              quantities: {
-                'pAq1': ProductQuantity(
-                  id: 'pAq1',
+        'A': Catalog(
+          id: 'A',
+          name: 'A',
+          products: {
+            'pA': Product(id: 'pA', name: 'pA', index: 1, price: 2, cost: 2),
+            'pA2': Product(
+              id: 'pA2',
+              name: 'pA2',
+              index: 2,
+              ingredients: {
+                'pAi1': ProductIngredient(
+                  id: 'pAi1',
                   amount: 2,
-                  additionalCost: 2,
-                  additionalPrice: 2,
-                  quantity: q1,
+                  ingredient: i1,
+                  quantities: {
+                    'pAq1': ProductQuantity(id: 'pAq1', amount: 2, additionalCost: 2, additionalPrice: 2, quantity: q1),
+                    'pAq2': ProductQuantity(
+                      id: 'pAq2',
+                      amount: 5,
+                      additionalCost: -5,
+                      additionalPrice: -5,
+                      quantity: q2,
+                    ),
+                  },
                 ),
-                'pAq2': ProductQuantity(
-                  id: 'pAq2',
-                  amount: 5,
-                  additionalCost: -5,
-                  additionalPrice: -5,
-                  quantity: q2,
-                ),
-              },
-            ),
-            'pAi2': ProductIngredient(id: 'pAi2', ingredient: i2),
-            'pAi3': ProductIngredient(
-              id: 'pAi3',
-              ingredient: i5,
-              quantities: {
-                'pAq2': ProductQuantity(
-                  id: 'pAq2',
-                  amount: 1,
-                  additionalCost: 1,
-                  additionalPrice: 1,
-                  quantity: q1,
+                'pAi2': ProductIngredient(id: 'pAi2', ingredient: i2),
+                'pAi3': ProductIngredient(
+                  id: 'pAi3',
+                  ingredient: i5,
+                  quantities: {
+                    'pAq2': ProductQuantity(id: 'pAq2', amount: 1, additionalCost: 1, additionalPrice: 1, quantity: q1),
+                  },
                 ),
               },
             ),
-          }),
-          'pA3': Product(id: 'pA3', name: 'pA3', index: 3),
-        }),
+            'pA3': Product(id: 'pA3', name: 'pA3', index: 3),
+          },
+        ),
         'B': Catalog(id: 'B', name: 'B'),
-        'C': Catalog(id: 'C', name: 'C', products: {
-          'pA4': Product(id: 'pA4', name: 'pA4', index: 4),
-        }),
+        'C': Catalog(
+          id: 'C',
+          name: 'C',
+          products: {'pA4': Product(id: 'pA4', name: 'pA4', index: 4)},
+        ),
       });
       for (var c in menu.items) {
         c.prepareItem();
@@ -132,11 +128,13 @@ void main() {
           map?.remove('createdAt');
           return map.toString();
         }).toList(),
-        equals(menu.products.map((e) {
-          final map = e.toObject().toMap();
-          map.remove('createdAt');
-          return map.toString();
-        }).toList()),
+        equals(
+          menu.products.map((e) {
+            final map = e.toObject().toMap();
+            map.remove('createdAt');
+            return map.toString();
+          }).toList(),
+        ),
       );
     });
 
@@ -146,13 +144,7 @@ void main() {
         'i1': Ingredient(id: 'i1', name: 'i1'),
         'i2': Ingredient(id: 'i2', name: 'i2', currentAmount: 1.0),
         'i3': Ingredient(id: 'i3', name: 'i3', currentAmount: 1.0, totalAmount: 2.0),
-        'i4': Ingredient(
-          id: 'i4',
-          name: 'i4',
-          currentAmount: 1.0,
-          restockPrice: 2.0,
-          restockQuantity: 3.0,
-        ),
+        'i4': Ingredient(id: 'i4', name: 'i4', currentAmount: 1.0, restockPrice: 2.0, restockQuantity: 3.0),
       });
 
       final items = format<Ingredient>(
@@ -192,9 +184,11 @@ void main() {
 
       expect(
         items.map((e) => e.item?.toObject().toMap().toString()).toList(),
-        equals(quantities.items.map((e) {
-          return e.toObject().toMap().toString();
-        }).toList()),
+        equals(
+          quantities.items.map((e) {
+            return e.toObject().toMap().toString();
+          }).toList(),
+        ),
       );
     });
 
@@ -209,11 +203,7 @@ void main() {
       final replenisher = Replenisher();
       replenisher.replaceItems({
         'r1': Replenishment(id: 'r1', name: 'r1'),
-        'r2': Replenishment(id: 'r2', name: 'r2', data: {
-          'i1': 20,
-          'i2': -30,
-          'i3': 0.5,
-        }),
+        'r2': Replenishment(id: 'r2', name: 'r2', data: {'i1': 20, 'i2': -30, 'i3': 0.5}),
       });
 
       final items = format<Replenishment>(
@@ -226,9 +216,11 @@ void main() {
 
       expect(
         items.map((e) => e.item?.toObject().toMap().toString()).toList(),
-        equals(replenisher.items.map((e) {
-          return e.toObject().toMap().toString();
-        }).toList()),
+        equals(
+          replenisher.items.map((e) {
+            return e.toObject().toMap().toString();
+          }).toList(),
+        ),
       );
     });
 
@@ -242,18 +234,8 @@ void main() {
           mode: OrderAttributeMode.changePrice,
           options: {
             'o1': OrderAttributeOption(id: 'o1', name: 'o1', index: 1),
-            'o2': OrderAttributeOption(
-              id: 'o2',
-              name: 'o2',
-              index: 2,
-              isDefault: true,
-            ),
-            'o3': OrderAttributeOption(
-              id: 'o3',
-              name: 'o3',
-              index: 3,
-              modeValue: 20,
-            ),
+            'o2': OrderAttributeOption(id: 'o2', name: 'o2', index: 2, isDefault: true),
+            'o3': OrderAttributeOption(id: 'o3', name: 'o3', index: 3, modeValue: 20),
           },
         ),
         'c2': OrderAttribute(id: 'c2', name: 'c2', index: 2),
@@ -263,19 +245,8 @@ void main() {
           index: 3,
           mode: OrderAttributeMode.changeDiscount,
           options: {
-            'o1': OrderAttributeOption(
-              id: 'o1',
-              name: 'o1',
-              isDefault: true,
-              modeValue: 20,
-              index: 1,
-            ),
-            'o2': OrderAttributeOption(
-              id: 'o2',
-              name: 'o2',
-              modeValue: 0,
-              index: 2,
-            ),
+            'o1': OrderAttributeOption(id: 'o1', name: 'o1', isDefault: true, modeValue: 20, index: 1),
+            'o2': OrderAttributeOption(id: 'o2', name: 'o2', modeValue: 0, index: 2),
           },
         ),
       });

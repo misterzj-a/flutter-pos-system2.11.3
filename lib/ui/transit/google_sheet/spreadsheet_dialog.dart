@@ -147,36 +147,34 @@ class _SpreadsheetDialogState extends State<SpreadsheetDialog> {
     return AlertDialog(
       title: Text(S.transitGoogleSheetDialogTitle),
       content: SingleChildScrollView(
-        child: Column(children: [
-          if (widget.allowCreateNew) ...[
-            CheckboxListTile(
-              dense: true,
-              value: createNew,
-              title: Text(S.transitGoogleSheetDialogCreate),
-              onChanged: (v) => setState(() => createNew = v!),
-            ),
-            CheckboxListTile(
-              dense: true,
-              value: !createNew,
-              title: Text(S.transitGoogleSheetDialogSelectExist),
-              onChanged: (v) => setState(() => createNew = !v!),
-            ),
-            const Divider(),
-          ],
-          if (!createNew) ...[
-            _buildTextField(),
-            if (errorText != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(errorText!, style: Theme.of(context).inputDecorationTheme.errorStyle),
+        child: Column(
+          children: [
+            if (widget.allowCreateNew) ...[
+              CheckboxListTile(
+                dense: true,
+                value: createNew,
+                title: Text(S.transitGoogleSheetDialogCreate),
+                onChanged: (v) => setState(() => createNew = v!),
               ),
+              CheckboxListTile(
+                dense: true,
+                value: !createNew,
+                title: Text(S.transitGoogleSheetDialogSelectExist),
+                onChanged: (v) => setState(() => createNew = !v!),
+              ),
+              const Divider(),
+            ],
+            if (!createNew) ...[
+              _buildTextField(),
+              if (errorText != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(errorText!, style: Theme.of(context).inputDecorationTheme.errorStyle),
+                ),
+            ],
+            if (showTutorial) Padding(padding: const EdgeInsets.only(top: 8.0), child: _buildTutorialImage()),
           ],
-          if (showTutorial)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: _buildTutorialImage(),
-            ),
-        ]),
+        ),
       ),
       actions: [
         PopButton(

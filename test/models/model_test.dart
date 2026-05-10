@@ -46,18 +46,15 @@ void main() {
       });
 
       test('Option calculatePrice', () {
-        final s1 = OrderAttribute(options: {
-          'so-1': OrderAttributeOption(modeValue: 1),
-        })
-          ..prepareItem();
-        final s2 = OrderAttribute(mode: OrderAttributeMode.changeDiscount, options: {
-          'so-2': OrderAttributeOption(modeValue: 50),
-        })
-          ..prepareItem();
-        final s3 = OrderAttribute(mode: OrderAttributeMode.changePrice, options: {
-          'so-2': OrderAttributeOption(modeValue: 5),
-        })
-          ..prepareItem();
+        final s1 = OrderAttribute(options: {'so-1': OrderAttributeOption(modeValue: 1)})..prepareItem();
+        final s2 = OrderAttribute(
+          mode: OrderAttributeMode.changeDiscount,
+          options: {'so-2': OrderAttributeOption(modeValue: 50)},
+        )..prepareItem();
+        final s3 = OrderAttribute(
+          mode: OrderAttributeMode.changePrice,
+          options: {'so-2': OrderAttributeOption(modeValue: 5)},
+        )..prepareItem();
         num price = 100;
 
         for (var option in s1.items) {
@@ -77,13 +74,15 @@ void main() {
 
   group('Order', () {
     test('Product rebind', () {
-      final product = Product(id: 'p-1', name: 'p-1', ingredients: {
-        'pi-1': ProductIngredient(id: 'pi-1'),
-        'pi-2': ProductIngredient(id: 'pi-2'),
-      });
-      final order = CartProduct(product, quantities: {
-        'pi-1': 'pq-1',
-      });
+      final product = Product(
+        id: 'p-1',
+        name: 'p-1',
+        ingredients: {
+          'pi-1': ProductIngredient(id: 'pi-1'),
+          'pi-2': ProductIngredient(id: 'pi-2'),
+        },
+      );
+      final order = CartProduct(product, quantities: {'pi-1': 'pq-1'});
 
       expect(order.quantities.isEmpty, isTrue);
       expect(order.getQuantityId('pi-1'), equals('pq-1'));

@@ -21,27 +21,20 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
   @override
   Widget build(BuildContext context) {
     if (_Status.allowChoose != status) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SingleRowWrap(
-          key: Key('order.ingredient.${status.name}'),
-          color: Colors.transparent,
-          children: <Widget>[
-            ChoiceChip(
-              selected: false,
-              label: Text(S.orderCartIngredientStatus(status.name)),
-            ),
-          ],
-        ),
-        SingleRowWrap(
-          color: Colors.transparent,
-          children: <Widget>[
-            ChoiceChip(
-              selected: false,
-              label: Text(S.orderCartQuantityNotAble),
-            ),
-          ],
-        ),
-      ]);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SingleRowWrap(
+            key: Key('order.ingredient.${status.name}'),
+            color: Colors.transparent,
+            children: <Widget>[ChoiceChip(selected: false, label: Text(S.orderCartIngredientStatus(status.name)))],
+          ),
+          SingleRowWrap(
+            color: Colors.transparent,
+            children: <Widget>[ChoiceChip(selected: false, label: Text(S.orderCartQuantityNotAble))],
+          ),
+        ],
+      );
     }
 
     return Column(
@@ -134,9 +127,4 @@ class _CartProductStateSelectorState extends State<CartProductStateSelector> {
   }
 }
 
-enum _Status {
-  emptyCart,
-  differentProducts,
-  noNeedIngredient,
-  allowChoose,
-}
+enum _Status { emptyCart, differentProducts, noNeedIngredient, allowChoose }

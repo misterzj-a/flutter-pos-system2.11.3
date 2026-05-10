@@ -15,44 +15,41 @@ void main() {
         final result = storage.sanitize({'id.f.g': 'i'});
 
         expect(
-            result.data,
-            equals({
-              'id': {'f.g': 'i'}
-            }));
+          result.data,
+          equals({
+            'id': {'f.g': 'i'},
+          }),
+        );
       });
 
       test('alway get field delete in null', () {
-        final result = storage.sanitize({
-          'some-id.a.b': 'c',
-          'some-id.a': null,
-        });
+        final result = storage.sanitize({'some-id.a.b': 'c', 'some-id.a': null});
 
         expect(
-            result.data,
-            equals({
-              'some-id': {
-                'a.b': 'c',
-                'a': FieldValue.delete,
-              }
-            }));
+          result.data,
+          equals({
+            'some-id': {'a.b': 'c', 'a': FieldValue.delete},
+          }),
+        );
       });
 
       test('should sanitize multiple values', () {
         final result = storage.sanitize({
           'some-id.a': null,
           'some-id.b.c.a': 'c',
-          'some-id.g': {'h': null}
+          'some-id.g': {'h': null},
         });
 
         expect(
-            result.data,
-            equals({
-              'some-id': {
-                'a': FieldValue.delete,
-                'b.c.a': 'c',
-                'g': {'h': null}
-              }
-            }));
+          result.data,
+          equals({
+            'some-id': {
+              'a': FieldValue.delete,
+              'b.c.a': 'c',
+              'g': {'h': null},
+            },
+          }),
+        );
       });
     });
 
@@ -60,21 +57,22 @@ void main() {
       test('updateOverlap', () {
         final a = {
           'a': 'a',
-          'b': {'b1': 'b1'}
+          'b': {'b1': 'b1'},
         };
         final d = StorageSanitizedData();
         d.updateOverlap(a, {
           'a': 'a2',
           'c': 'c',
-          'b': {'b1': 'b2'}
+          'b': {'b1': 'b2'},
         });
         expect(
-            a,
-            equals({
-              'a': 'a2',
-              'c': 'c',
-              'b': {'b1': 'b2'}
-            }));
+          a,
+          equals({
+            'a': 'a2',
+            'c': 'c',
+            'b': {'b1': 'b2'},
+          }),
+        );
       });
     });
 
@@ -95,7 +93,7 @@ void main() {
       final result = await storage.get(Stores.menu);
       expect(result, {
         'hi': {'a': 'b'},
-        'there': {'b': 'c'}
+        'there': {'b': 'c'},
       });
     });
 
@@ -128,15 +126,15 @@ void main() {
     test('#setAll', () async {
       await storage.setAll(Stores.menu, {
         'a': {'b': 'c', 'd': 'e'},
-        'b': {'a': 'a'}
+        'b': {'a': 'a'},
       });
       await storage.setAll(Stores.menu, {
-        'a': {'d': 'f'}
+        'a': {'d': 'f'},
       });
       final result = await storage.get(Stores.menu);
       expect(result, {
         'a': {'b': 'c', 'd': 'f'},
-        'b': {'a': 'a'}
+        'b': {'a': 'a'},
       });
     });
 

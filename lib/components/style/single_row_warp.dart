@@ -6,11 +6,7 @@ class SingleRowWrap extends StatelessWidget {
 
   final Color? color;
 
-  const SingleRowWrap({
-    super.key,
-    required this.children,
-    this.color,
-  });
+  const SingleRowWrap({super.key, required this.children, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +18,7 @@ class SingleRowWrap extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-          child: Wrap(
-            spacing: kInternalSpacing,
-            children: children,
-          ),
+          child: Wrap(spacing: kInternalSpacing, children: children),
         ),
       ),
     );

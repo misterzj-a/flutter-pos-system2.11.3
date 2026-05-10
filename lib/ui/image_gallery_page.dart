@@ -63,12 +63,12 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
             ],
           )
         : fullScreen
-            ? AppBar(
-                title: Text(S.imageGalleryTitle),
-                primary: false,
-                leading: const MyCloseButton(key: Key('image_gallery.close')),
-              )
-            : null;
+        ? AppBar(
+            title: Text(S.imageGalleryTitle),
+            primary: false,
+            leading: const MyCloseButton(key: Key('image_gallery.close')),
+          )
+        : null;
 
     final body = Scaffold(
       primary: false,
@@ -95,18 +95,13 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
 
   Widget _buildBody(Breakpoint bp, double width) {
     if (images == null) {
-      return const SingleChildScrollView(
-        child: Center(child: CircularProgressIndicator.adaptive()),
-      );
+      return const SingleChildScrollView(child: Center(child: CircularProgressIndicator.adaptive()));
     }
 
     if (images!.isEmpty) {
       return SingleChildScrollView(
         child: Center(
-          child: EmptyBody(
-            onPressed: createImage,
-            content: S.imageGalleryEmpty,
-          ),
+          child: EmptyBody(onPressed: createImage, content: S.imageGalleryEmpty),
         ),
       );
     }
@@ -131,14 +126,17 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
               child: ElevatedButton(
                 key: const Key('image_gallery.add'),
                 onPressed: createImage,
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(KIcons.add),
-                  Text(
-                    S.imageGalleryActionCreate,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ]),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(KIcons.add),
+                    Text(
+                      S.imageGalleryActionCreate,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -209,12 +207,7 @@ class ImageGalleryPageState extends State<ImageGalleryPage> {
   }
 
   void createImage() async {
-    await showSnackbarWhenFutureError<void>(
-      _createImage(),
-      'create_image',
-      context: context,
-      key: messenger,
-    );
+    await showSnackbarWhenFutureError<void>(_createImage(), 'create_image', context: context, key: messenger);
   }
 
   Future<void> _createImage() async {

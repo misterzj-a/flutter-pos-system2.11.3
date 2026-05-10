@@ -39,8 +39,8 @@ class ExcelExporter extends DataExporter {
           final value = cell.string != null
               ? TextCellValue(cell.string!)
               : cell.number != null
-                  ? DoubleCellValue(cell.number!.toDouble())
-                  : null;
+              ? DoubleCellValue(cell.number!.toDouble())
+              : null;
           if (value != null) {
             sheet.updateCell(CellIndex.indexByColumnRow(columnIndex: columnIdx, rowIndex: rowIdx), value);
           }

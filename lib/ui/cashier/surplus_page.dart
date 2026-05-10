@@ -27,12 +27,14 @@ class CashierSurplus extends StatelessWidget {
 
     final rows = <DataRow>[
       for (final e in cashier.getDifference())
-        DataRow(cells: <DataCell>[
-          DataCell(Text(e.unit.toCurrency())),
-          generateCell(e.currentCount, onTap: () => _handleTap(context, e)),
-          generateCell(e.diffCount, withSign: true),
-          generateCell(e.defaultCount),
-        ]),
+        DataRow(
+          cells: <DataCell>[
+            DataCell(Text(e.unit.toCurrency())),
+            generateCell(e.currentCount, onTap: () => _handleTap(context, e)),
+            generateCell(e.diffCount, withSign: true),
+            generateCell(e.defaultCount),
+          ],
+        ),
     ];
 
     return ResponsiveDialog(
@@ -47,35 +49,36 @@ class CashierSurplus extends StatelessWidget {
         },
         child: Text(MaterialLocalizations.of(context).okButtonLabel),
       ),
-      content: Column(children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          _DataWithLabel(
-            data: cashier.currentTotal.toCurrency(),
-            label: S.cashierSurplusCurrentTotalLabel,
-            helper: S.cashierSurplusCurrentTotalHelper,
+      content: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _DataWithLabel(
+                data: cashier.currentTotal.toCurrency(),
+                label: S.cashierSurplusCurrentTotalLabel,
+                helper: S.cashierSurplusCurrentTotalHelper,
+              ),
+              _DataWithLabel(
+                data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
+                label: S.cashierSurplusDiffTotalLabel,
+                helper: S.cashierSurplusDiffTotalHelper,
+              ),
+            ],
           ),
-          _DataWithLabel(
-            data: (cashier.currentTotal - cashier.defaultTotal).toCurrency(),
-            label: S.cashierSurplusDiffTotalLabel,
-            helper: S.cashierSurplusDiffTotalHelper,
+          const Divider(),
+          HintText(S.cashierSurplusTableHint, textAlign: TextAlign.center),
+          const SizedBox(height: kInternalSpacing),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(columns: columns, rows: rows),
           ),
-        ]),
-        const Divider(),
-        HintText(S.cashierSurplusTableHint, textAlign: TextAlign.center),
-        const SizedBox(height: kInternalSpacing),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(columns: columns, rows: rows),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
-  DataCell generateCell(
-    int value, {
-    bool withSign = false,
-    VoidCallback? onTap,
-  }) {
+  DataCell generateCell(int value, {bool withSign = false, VoidCallback? onTap}) {
     return DataCell(
       Text(
         withSign ? '${value > 0 ? '+' : ''}$value' : value.toString(),
@@ -112,11 +115,7 @@ class _DataWithLabel extends StatelessWidget {
 
   final String? helper;
 
-  const _DataWithLabel({
-    required this.data,
-    required this.label,
-    this.helper,
-  });
+  const _DataWithLabel({required this.data, required this.label, this.helper});
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +123,15 @@ class _DataWithLabel extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(children: [
-        Text(data, style: theme.textTheme.headlineSmall),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(label),
-          if (helper != null) InfoPopup(helper!),
-        ]),
-      ]),
+      child: Column(
+        children: [
+          Text(data, style: theme.textTheme.headlineSmall),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(label), if (helper != null) InfoPopup(helper!)],
+          ),
+        ],
+      ),
     );
   }
 }

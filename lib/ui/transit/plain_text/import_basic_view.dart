@@ -11,11 +11,7 @@ class ImportBasicHeader extends StatefulWidget {
   final ValueNotifier<FormattableModel?> selected;
   final ValueNotifier<PreviewFormatter?> formatter;
 
-  const ImportBasicHeader({
-    super.key,
-    required this.selected,
-    required this.formatter,
-  });
+  const ImportBasicHeader({super.key, required this.selected, required this.formatter});
 
   @override
   State<ImportBasicHeader> createState() => _ImportBasicHeaderState();
@@ -50,9 +46,7 @@ class _ImportBasicHeaderState extends State<ImportBasicHeader> {
             minLines: 3,
             maxLines: 5,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(
-                borderSide: BorderSide(width: 5.0),
-              ),
+              border: const OutlineInputBorder(borderSide: BorderSide(width: 5.0)),
               hintText: S.transitImportBtnPlainTextHint,
               helperMaxLines: 2,
             ),

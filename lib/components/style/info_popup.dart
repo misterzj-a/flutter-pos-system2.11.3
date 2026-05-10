@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class InfoPopup extends StatelessWidget {
   final String message;
 
-  const InfoPopup(
-    this.message, {
-    super.key,
-  });
+  const InfoPopup(this.message, {super.key});
 
   @override
   Widget build(BuildContext context) {

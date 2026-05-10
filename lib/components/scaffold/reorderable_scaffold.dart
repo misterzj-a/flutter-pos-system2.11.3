@@ -14,12 +14,7 @@ class ReorderableScaffold<T extends ModelOrderable> extends StatefulWidget {
 
   final Future<void> Function(List<T>) handleSubmit;
 
-  const ReorderableScaffold({
-    super.key,
-    required this.items,
-    required this.title,
-    required this.handleSubmit,
-  });
+  const ReorderableScaffold({super.key, required this.items, required this.title, required this.handleSubmit});
 
   @override
   State<ReorderableScaffold<T>> createState() => _ReorderableScaffoldState<T>();
@@ -46,10 +41,7 @@ class _ReorderableScaffoldState<T extends ModelOrderable> extends State<Reordera
               elevation: 1.0,
               child: ListTile(
                 title: Text(item.name),
-                trailing: ReorderableDragStartListener(
-                  index: index,
-                  child: const Icon(Icons.reorder_outlined),
-                ),
+                trailing: ReorderableDragStartListener(index: index, child: const Icon(Icons.reorder_outlined)),
               ),
             ),
           ),
@@ -58,10 +50,7 @@ class _ReorderableScaffoldState<T extends ModelOrderable> extends State<Reordera
     );
     final size = MediaQuery.sizeOf(context);
     if (size.width > Breakpoint.medium.max) {
-      child = SizedBox(
-        width: Breakpoint.compact.max,
-        child: child,
-      );
+      child = SizedBox(width: Breakpoint.compact.max, child: child);
     }
     return ResponsiveDialog(
       title: Text(widget.title),

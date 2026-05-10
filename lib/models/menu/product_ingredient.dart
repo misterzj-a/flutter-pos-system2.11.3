@@ -53,14 +53,16 @@ class ProductIngredient extends Model<ProductIngredientObject>
       throw Exception(object.ingredientId);
     }
 
-    final quantities = object.quantities.map<ProductQuantity?>((e) {
-      try {
-        return ProductQuantity.fromObject(e);
-      } catch (e) {
-        // not finding quantity
-        return null;
-      }
-    }).where((e) => e != null);
+    final quantities = object.quantities
+        .map<ProductQuantity?>((e) {
+          try {
+            return ProductQuantity.fromObject(e);
+          } catch (e) {
+            // not finding quantity
+            return null;
+          }
+        })
+        .where((e) => e != null);
 
     if (!object.quantities.every((object) => object.isLatest)) {
       Menu.instance.versionChanged = true;
@@ -75,16 +77,10 @@ class ProductIngredient extends Model<ProductIngredientObject>
     )..prepareItem();
   }
 
-  factory ProductIngredient.fromRow(
-    ProductIngredient? ori,
-    List<String> row,
-  ) {
+  factory ProductIngredient.fromRow(ProductIngredient? ori, List<String> row) {
     var ingredient = ori?.ingredient ?? Stock.instance.getItemByName(row[0]) ?? Stock.instance.getStagedByName(row[0]);
     if (ingredient == null) {
-      ingredient = Ingredient(
-        name: row[0],
-        status: ModelStatus.staged,
-      );
+      ingredient = Ingredient(name: row[0], status: ModelStatus.staged);
       Stock.instance.addStaged(ingredient);
     }
 
@@ -141,10 +137,10 @@ class ProductIngredient extends Model<ProductIngredientObject>
 
   @override
   ProductIngredientObject toObject() => ProductIngredientObject(
-        id: id,
-        index: index,
-        ingredientId: ingredient.id,
-        amount: amount,
-        quantities: items.map((e) => e.toObject()).toList(),
-      );
+    id: id,
+    index: index,
+    ingredientId: ingredient.id,
+    amount: amount,
+    quantities: items.map((e) => e.toObject()).toList(),
+  );
 }

@@ -18,10 +18,7 @@ import 'package:possystem/translator.dart';
 class StockIngredientListTile extends StatelessWidget {
   final Ingredient item;
 
-  const StockIngredientListTile({
-    super.key,
-    required this.item,
-  });
+  const StockIngredientListTile({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +38,7 @@ class StockIngredientListTile extends StatelessWidget {
   }
 
   void editIngredient(BuildContext context) {
-    context.pushNamed(
-      Routes.stockIngrUpdate,
-      pathParameters: {'id': item.id},
-    );
+    context.pushNamed(Routes.stockIngrUpdate, pathParameters: {'id': item.id});
   }
 
   void showActions(BuildContext context) async {
@@ -91,12 +85,8 @@ class StockIngredientListTile extends StatelessWidget {
           title: Text(item.name),
           value: item.currentAmount.toDouble(),
           max: item.maxAmount,
-          builder: (child, onSubmit) => _RestockDialog(
-            ingredient: item,
-            quantityTab: child,
-            onSubmit: onSubmit,
-            currentValue: currentValue,
-          ),
+          builder: (child, onSubmit) =>
+              _RestockDialog(ingredient: item, quantityTab: child, onSubmit: onSubmit, currentValue: currentValue),
           currentValue: currentValue,
           decoration: InputDecoration(
             label: Text(S.stockIngredientRestockDialogQuantityLabel),
@@ -149,9 +139,11 @@ class _RestockDialogState extends State<_RestockDialog> {
           key: const Key('stock.repl.switch'),
           onPressed: switchMethod,
           // switch method, so the label is opposite
-          label: Text(replenishBy == ReplenishBy.quantity
-              ? S.stockIngredientRestockDialogPriceBtn
-              : S.stockIngredientRestockDialogQuantityBtn),
+          label: Text(
+            replenishBy == ReplenishBy.quantity
+                ? S.stockIngredientRestockDialogPriceBtn
+                : S.stockIngredientRestockDialogQuantityBtn,
+          ),
           icon: const Icon(Icons.currency_exchange_outlined),
         ),
       ],
@@ -181,9 +173,7 @@ class _RestockDialogState extends State<_RestockDialog> {
           if (popped && widget.currentValue.value != null) {
             final price = num.tryParse(controller.text);
             if (price != null) {
-              await widget.ingredient.update(IngredientObject(
-                restockLastPrice: price,
-              ));
+              await widget.ingredient.update(IngredientObject(restockLastPrice: price));
             }
           }
         },
@@ -193,76 +183,88 @@ class _RestockDialogState extends State<_RestockDialog> {
   }
 
   Widget buildPriceTab() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(S.stockIngredientRestockDialogTitle(
-          widget.ingredient.restockQuantity.toShortString(),
-          widget.ingredient.restockPrice!.toShortString(),
-        )),
-        subtitle: Text(S.stockIngredientRestockDialogSubtitle),
-        trailing: IconButton(
-          icon: const Icon(KIcons.edit),
-          onPressed: () => context.pushNamed(Routes.stockIngrRestock, pathParameters: {
-            'id': widget.ingredient.id,
-          }),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(
+            S.stockIngredientRestockDialogTitle(
+              widget.ingredient.restockQuantity.toShortString(),
+              widget.ingredient.restockPrice!.toShortString(),
+            ),
+          ),
+          subtitle: Text(S.stockIngredientRestockDialogSubtitle),
+          trailing: IconButton(
+            icon: const Icon(KIcons.edit),
+            onPressed: () => context.pushNamed(Routes.stockIngrRestock, pathParameters: {'id': widget.ingredient.id}),
+          ),
         ),
-      ),
-      TextFormField(
-        key: const Key('stock.repl.price.text'),
-        controller: controller,
-        onSaved: widget.onSubmit,
-        onFieldSubmitted: widget.onSubmit,
-        autofocus: true,
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.end,
-        decoration: InputDecoration(
-          label: Text(S.stockIngredientRestockDialogPriceLabel),
-          prefix: const Text(r'$'),
+        TextFormField(
+          key: const Key('stock.repl.price.text'),
+          controller: controller,
+          onSaved: widget.onSubmit,
+          onFieldSubmitted: widget.onSubmit,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.end,
+          decoration: InputDecoration(label: Text(S.stockIngredientRestockDialogPriceLabel), prefix: const Text(r'$')),
+          validator: Validator.positiveNumber(S.stockIngredientRestockDialogPriceLabel),
+          textInputAction: TextInputAction.done,
         ),
-        validator: Validator.positiveNumber(S.stockIngredientRestockDialogPriceLabel),
-        textInputAction: TextInputAction.done,
-      ),
-      const SizedBox(height: 8.0),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text('÷', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
-        // this money is independent to currency, so we don't need use
-        // currency to format it.
-        Text('\$${widget.ingredient.restockPrice!.toShortString()}'),
-      ]),
-      const SizedBox(height: 8.0),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text('*', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
-        Text(widget.ingredient.restockQuantity.toShortString()),
-      ]),
-      const SizedBox(height: 8.0),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(
-          '+ (${S.stockIngredientRestockDialogPriceOldAmount})',
-          style: const TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true),
+        const SizedBox(height: 8.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('÷', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
+            // this money is independent to currency, so we don't need use
+            // currency to format it.
+            Text('\$${widget.ingredient.restockPrice!.toShortString()}'),
+          ],
         ),
-        Text(widget.ingredient.currentAmount.toShortString()),
-      ]),
-      const Divider(),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text('=', style: TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true)),
-        ListenableBuilder(
-          listenable: controller,
-          builder: (context, _) {
-            final price = num.tryParse(controller.text);
-            if (price == null) {
-              widget.currentValue.value = null;
-              return Text(widget.ingredient.currentAmount.toShortString());
-            }
+        const SizedBox(height: 8.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('*', style: TextStyle(color: Colors.grey, fontSize: 14, inherit: true)),
+            Text(widget.ingredient.restockQuantity.toShortString()),
+          ],
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '+ (${S.stockIngredientRestockDialogPriceOldAmount})',
+              style: const TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true),
+            ),
+            Text(widget.ingredient.currentAmount.toShortString()),
+          ],
+        ),
+        const Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('=', style: TextStyle(color: Colors.grey, fontSize: 14.0, inherit: true)),
+            ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) {
+                final price = num.tryParse(controller.text);
+                if (price == null) {
+                  widget.currentValue.value = null;
+                  return Text(widget.ingredient.currentAmount.toShortString());
+                }
 
-            final quantity = price / widget.ingredient.restockPrice! * widget.ingredient.restockQuantity;
-            final value = (quantity + widget.ingredient.currentAmount).toShortString();
-            widget.currentValue.value = value;
-            return Text(value);
-          },
+                final quantity = price / widget.ingredient.restockPrice! * widget.ingredient.restockQuantity;
+                final value = (quantity + widget.ingredient.currentAmount).toShortString();
+                widget.currentValue.value = value;
+                return Text(value);
+              },
+            ),
+          ],
         ),
-      ]),
-    ]);
+      ],
+    );
   }
 
   @override
@@ -288,7 +290,4 @@ class _RestockDialogState extends State<_RestockDialog> {
   }
 }
 
-enum _Actions {
-  delete,
-  edit,
-}
+enum _Actions { delete, edit }

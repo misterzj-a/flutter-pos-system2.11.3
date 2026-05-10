@@ -4,10 +4,7 @@ import 'package:possystem/constants/icons.dart';
 
 import 'dialog/delete_dialog.dart';
 
-Future<T?> showPositionedMenu<T>(
-  BuildContext context, {
-  required List<MenuAction<T>> actions,
-}) {
+Future<T?> showPositionedMenu<T>(BuildContext context, {required List<MenuAction<T>> actions}) {
   // copy from [flutter/src/material/popup_menu.dart]
   final widget = context.findRenderObject();
   var position = const RelativeRect.fromLTRB(0, 0, 0, 0);
@@ -27,9 +24,7 @@ Future<T?> showPositionedMenu<T>(
     context: context,
     position: position,
     clipBehavior: Clip.hardEdge,
-    items: [
-      for (final action in actions) action.toPopupMenuItem(context),
-    ],
+    items: [for (final action in actions) action.toPopupMenuItem(context)],
   );
 }
 
@@ -69,11 +64,7 @@ class MenuAction<T> {
 
   Future<void> onTap(BuildContext context) async {
     if (route != null && context.mounted) {
-      await context.pushNamed(
-        route!,
-        pathParameters: routePathParameters,
-        queryParameters: routeQueryParameters,
-      );
+      await context.pushNamed(route!, pathParameters: routePathParameters, queryParameters: routeQueryParameters);
     }
   }
 }
@@ -95,15 +86,18 @@ class MenuActionGroup {
     bool popAfterDeleted = false,
   }) async {
     final local = MaterialLocalizations.of(context);
-    final result = await showPositionedMenu<T>(context, actions: [
-      ...actions,
-      MenuAction(
-        key: const Key('btn.delete'),
-        title: Text(local.deleteButtonTooltip),
-        leading: const Icon(KIcons.delete),
-        returnValue: deleteValue,
-      ),
-    ]);
+    final result = await showPositionedMenu<T>(
+      context,
+      actions: [
+        ...actions,
+        MenuAction(
+          key: const Key('btn.delete'),
+          title: Text(local.deleteButtonTooltip),
+          leading: const Icon(KIcons.delete),
+          returnValue: deleteValue,
+        ),
+      ],
+    );
 
     if (result == deleteValue) {
       if (context.mounted) {

@@ -57,14 +57,16 @@ class Product extends Model<ProductObject>
   }
 
   factory Product.fromObject(ProductObject object) {
-    final ingredients = object.ingredients.map((e) {
-      try {
-        return ProductIngredient.fromObject(e);
-      } catch (e) {
-        // not finding ingredient
-        return null;
-      }
-    }).where((e) => e != null);
+    final ingredients = object.ingredients
+        .map((e) {
+          try {
+            return ProductIngredient.fromObject(e);
+          } catch (e) {
+            // not finding ingredient
+            return null;
+          }
+        })
+        .where((e) => e != null);
 
     if (!object.ingredients.every((object) => object.isLatest)) {
       Menu.instance.versionChanged = true;
@@ -83,25 +85,14 @@ class Product extends Model<ProductObject>
     )..prepareItem();
   }
 
-  factory Product.fromRow(
-    Product? ori,
-    List<String> row, {
-    required int index,
-  }) {
+  factory Product.fromRow(Product? ori, List<String> row, {required int index}) {
     final price = num.parse(row[2]);
     final cost = num.parse(row[3]);
     final status = ori == null
         ? ModelStatus.staged
         : (price == ori.price && cost == ori.cost ? ModelStatus.normal : ModelStatus.updated);
 
-    return Product(
-      id: ori?.id,
-      name: row[1],
-      index: index,
-      price: price,
-      cost: cost,
-      status: status,
-    );
+    return Product(id: ori?.id, name: row[1], index: index, price: price, cost: cost, status: status);
   }
 
   @override
@@ -149,15 +140,15 @@ class Product extends Model<ProductObject>
 
   @override
   ProductObject toObject() => ProductObject(
-        id: id,
-        name: name,
-        index: index,
-        price: price,
-        cost: cost,
-        createdAt: createdAt,
-        imagePath: imagePath,
-        ingredients: items.map((e) => e.toObject()).toList(),
-      );
+    id: id,
+    name: name,
+    index: index,
+    price: price,
+    cost: cost,
+    createdAt: createdAt,
+    imagePath: imagePath,
+    ingredients: items.map((e) => e.toObject()).toList(),
+  );
 }
 
 class ProductMatch {
@@ -166,12 +157,7 @@ class ProductMatch {
   ProductQuantity? quantityMatched;
   double score;
 
-  ProductMatch({
-    required this.product,
-    this.ingredientMatched,
-    this.quantityMatched,
-    this.score = 0,
-  });
+  ProductMatch({required this.product, this.ingredientMatched, this.quantityMatched, this.score = 0});
 
   String? get detailedName => ingredientMatched?.name ?? quantityMatched?.name;
   String? get detailedType => ingredientMatched != null ? 'ingredient' : (quantityMatched != null ? 'quantity' : null);

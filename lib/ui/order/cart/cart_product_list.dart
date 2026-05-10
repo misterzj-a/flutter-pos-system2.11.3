@@ -16,11 +16,7 @@ class CartProductList extends StatefulWidget {
 
   final ValueNotifier<bool>? scrollable;
 
-  const CartProductList({
-    super.key,
-    this.scrollController,
-    this.scrollable,
-  });
+  const CartProductList({super.key, this.scrollController, this.scrollable});
 
   @override
   State<CartProductList> createState() => _CartProductListState();
@@ -136,17 +132,11 @@ class _CartProductListTile extends StatelessWidget {
             Cart.instance.priceChanged();
           },
         ),
-        Text(
-          S.orderCartProductPrice(product.totalPrice.toCurrency()),
-          key: Key('cart.product.$index.price'),
-        ),
+        Text(S.orderCartProductPrice(product.totalPrice.toCurrency()), key: Key('cart.product.$index.price')),
       ],
     );
 
-    final subtitle = product.quantities.map((e) => S.orderCartProductIngredient(
-          e.ingredient.name,
-          e.name,
-        ));
+    final subtitle = product.quantities.map((e) => S.orderCartProductIngredient(e.ingredient.name, e.name));
 
     return MergeSemantics(
       child: ListTileTheme.merge(
@@ -157,11 +147,8 @@ class _CartProductListTile extends StatelessWidget {
             key: Key('cart.product.$index'),
             leading: leading,
             title: Text(product.name, overflow: TextOverflow.ellipsis),
-            subtitle: MetaBlock.withString(
-                  context,
-                  subtitle,
-                  textOverflow: TextOverflow.visible,
-                ) ??
+            subtitle:
+                MetaBlock.withString(context, subtitle, textOverflow: TextOverflow.visible) ??
                 HintText(S.orderCartProductDefaultQuantity),
             trailing: trailing,
             onTap: () => Cart.instance.toggleAll(false, except: product),

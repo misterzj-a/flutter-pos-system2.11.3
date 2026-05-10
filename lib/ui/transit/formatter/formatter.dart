@@ -99,13 +99,7 @@ class CellData {
   /// Bold the text
   final bool? isBold;
 
-  CellData({
-    this.string,
-    this.number,
-    this.note,
-    this.options,
-    this.isBold,
-  });
+  CellData({this.string, this.number, this.note, this.options, this.isBold});
 
   @override
   String toString() {

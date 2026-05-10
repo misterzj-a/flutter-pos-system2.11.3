@@ -11,12 +11,7 @@ class CheckoutCashierSnapshot extends StatefulWidget {
 
   final bool showChange;
 
-  const CheckoutCashierSnapshot({
-    super.key,
-    required this.price,
-    required this.paid,
-    this.showChange = true,
-  });
+  const CheckoutCashierSnapshot({super.key, required this.price, required this.paid, this.showChange = true});
 
   @override
   State<CheckoutCashierSnapshot> createState() => _CheckoutCashierSnapshotState();
@@ -54,13 +49,15 @@ class _CheckoutCashierSnapshotState extends State<CheckoutCashierSnapshot> {
       return chips;
     }
 
-    return Row(children: <Widget>[
-      Expanded(child: chips),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(kInternalLargeSpacing, 0, kHorizontalSpacing, 0),
-        child: Text(S.orderCheckoutDetailsSnapshotLabelChange(change.toCurrency())),
-      ),
-    ]);
+    return Row(
+      children: <Widget>[
+        Expanded(child: chips),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(kInternalLargeSpacing, 0, kHorizontalSpacing, 0),
+          child: Text(S.orderCheckoutDetailsSnapshotLabelChange(change.toCurrency())),
+        ),
+      ],
+    );
   }
 
   List<num> get paidOptionWithCustom => [if (customValue != null) customValue!, ...paidOptions];

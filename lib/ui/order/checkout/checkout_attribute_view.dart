@@ -9,10 +9,7 @@ import 'package:possystem/translator.dart';
 class CheckoutAttributeView extends StatelessWidget {
   final ValueNotifier<num> price;
 
-  const CheckoutAttributeView({
-    super.key,
-    required this.price,
-  });
+  const CheckoutAttributeView({super.key, required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +30,15 @@ class CheckoutAttributeView extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(kHorizontalSpacing, kTopSpacing, kHorizontalSpacing, kFABSpacing),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
-        Text(S.orderCheckoutAttributeNoteTitle, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: kInternalSpacing),
-        noteField,
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final item in OrderAttributes.instance.notEmptyItems) _CheckoutAttributeGroup(item, price),
+          Text(S.orderCheckoutAttributeNoteTitle, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: kInternalSpacing),
+          noteField,
+        ],
+      ),
     );
   }
 }
@@ -59,29 +59,32 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Text(
-        widget.attribute.name,
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-      const SizedBox(height: kInternalSpacing),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
-        child: Wrap(spacing: kInternalSpacing, children: [
-          for (final option in widget.attribute.itemList)
-            ChoiceChip(
-              key: Key('order.attr.${widget.attribute.id}.${option.id}'),
-              onSelected: (selected) {
-                setState(() => selectedId = selected ? option.id : null);
-                selectOption(option, selected);
-              },
-              selected: selectedId == option.id,
-              label: Text(option.name),
-            )
-        ]),
-      ),
-      const SizedBox(height: kInternalLargeSpacing),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(widget.attribute.name, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: kInternalSpacing),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kHorizontalSpacing),
+          child: Wrap(
+            spacing: kInternalSpacing,
+            children: [
+              for (final option in widget.attribute.itemList)
+                ChoiceChip(
+                  key: Key('order.attr.${widget.attribute.id}.${option.id}'),
+                  onSelected: (selected) {
+                    setState(() => selectedId = selected ? option.id : null);
+                    selectOption(option, selected);
+                  },
+                  selected: selectedId == option.id,
+                  label: Text(option.name),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: kInternalLargeSpacing),
+      ],
+    );
   }
 
   @override
@@ -91,10 +94,7 @@ class _CheckoutAttributeGroupState extends State<_CheckoutAttributeGroup> {
   }
 
   void selectOption(OrderAttributeOption option, bool isSelected) {
-    Cart.instance.chooseAttribute(
-      widget.attribute.id,
-      isSelected ? option.id : '',
-    );
+    Cart.instance.chooseAttribute(widget.attribute.id, isSelected ? option.id : '');
 
     widget.price.value = Cart.instance.price;
   }

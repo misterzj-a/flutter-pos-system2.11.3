@@ -108,10 +108,7 @@ class _WithDrawerState extends State<_WithDrawer> {
 
     return Scaffold(
       key: scaffold,
-      appBar: AppBar(
-        title: Text(S.title(tab.name)),
-        flexibleSpace: const _FlexibleSpace(),
-      ),
+      appBar: AppBar(title: Text(S.title(tab.name)), flexibleSpace: const _FlexibleSpace()),
       floatingActionButton: _FAB(),
       drawer: _buildDrawer(tab),
       body: widget.shell,
@@ -135,9 +132,7 @@ class _WithDrawerState extends State<_WithDrawer> {
                     title: Text(S.title(e.name)),
                     selected: tab == e,
                     visualDensity: VisualDensity.compact,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                     onTap: () => _navTo(e.index),
                   ),
                   _closeDrawer,
@@ -198,27 +193,24 @@ class _WithRailState extends State<_WithRail> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.title(tab.name)),
-        flexibleSpace: const _FlexibleSpace(),
-      ),
+      appBar: AppBar(title: Text(S.title(tab.name)), flexibleSpace: const _FlexibleSpace()),
       floatingActionButton: _FAB(),
       body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
-    return Row(children: [
-      ListenableBuilder(
-        listenable: railExpanded,
-        builder: (context, child) => ListenableBuilder(
-          listenable: railSelected,
-          builder: (context, child) => _buildRail(),
+    return Row(
+      children: [
+        ListenableBuilder(
+          listenable: railExpanded,
+          builder: (context, child) =>
+              ListenableBuilder(listenable: railSelected, builder: (context, child) => _buildRail()),
         ),
-      ),
-      const VerticalDivider(),
-      Expanded(child: widget.shell),
-    ]);
+        const VerticalDivider(),
+        Expanded(child: widget.shell),
+      ],
+    );
   }
 
   Widget _buildRail() {
@@ -238,11 +230,7 @@ class _WithRailState extends State<_WithRail> {
         for (final e in _drawerTabs)
           // Show all tabs if expanded, otherwise only show important tabs
           if (railExpanded.value || e.important)
-            NavigationRailDestination(
-              icon: e.icon,
-              selectedIcon: e.selectedIcon,
-              label: e.wrap(Text(S.title(e.name))),
-            ),
+            NavigationRailDestination(icon: e.icon, selectedIcon: e.selectedIcon, label: e.wrap(Text(S.title(e.name)))),
       ],
     );
   }
@@ -266,11 +254,7 @@ class _Nested extends StatelessWidget {
   Widget build(BuildContext context) {
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
-        SliverAppBar(
-          pinned: true,
-          title: Text(title),
-          flexibleSpace: const _FlexibleSpace(),
-        ),
+        SliverAppBar(pinned: true, title: Text(title), flexibleSpace: const _FlexibleSpace()),
       ],
       body: body,
     );
@@ -316,12 +300,7 @@ class _FlexibleSpace extends StatelessWidget {
   }
 }
 
-const _bottomNavTabs = [
-  _Tab.analysis,
-  _Tab.stock,
-  _Tab.cashier,
-  _Tab.more,
-];
+const _bottomNavTabs = [_Tab.analysis, _Tab.stock, _Tab.cashier, _Tab.more];
 
 const _drawerTabs = [
   _Tab.analysis,
@@ -338,69 +317,26 @@ const _drawerTabs = [
 ];
 
 enum _Tab {
-  analysis(
-    icon: Icon(Icons.analytics_outlined),
-    selectedIcon: Icon(Icons.analytics),
-    important: true,
-  ),
-  stock(
-    icon: Icon(Icons.inventory_2_outlined),
-    selectedIcon: Icon(Icons.inventory_2),
-    important: true,
-  ),
-  cashier(
-    icon: Icon(Icons.monetization_on_outlined),
-    selectedIcon: Icon(Icons.monetization_on),
-    important: true,
-  ),
-  orderAttributes(
-    icon: Icon(Icons.assignment_ind_outlined),
-    selectedIcon: Icon(Icons.assignment_ind),
-  ),
-  menu(
-    icon: Icon(Icons.collections_outlined),
-    selectedIcon: Icon(Icons.collections),
-  ),
-  printers(
-    icon: Icon(Icons.print_outlined),
-    selectedIcon: Icon(Icons.print),
-  ),
-  stockQuantities(
-    icon: Icon(Icons.exposure_outlined),
-    selectedIcon: Icon(Icons.exposure),
-  ),
-  transit(
-    icon: Icon(Icons.local_shipping_outlined),
-    selectedIcon: Icon(Icons.local_shipping),
-  ),
-  elf(
-    icon: Icon(Icons.lightbulb_outlined),
-    selectedIcon: Icon(Icons.lightbulb),
-  ),
-  settings(
-    icon: Icon(Icons.settings_outlined),
-    selectedIcon: Icon(Icons.settings),
-  ),
-  debug(
-    icon: Icon(Icons.bug_report_outlined),
-    selectedIcon: Icon(Icons.bug_report),
-  ),
+  analysis(icon: Icon(Icons.analytics_outlined), selectedIcon: Icon(Icons.analytics), important: true),
+  stock(icon: Icon(Icons.inventory_2_outlined), selectedIcon: Icon(Icons.inventory_2), important: true),
+  cashier(icon: Icon(Icons.monetization_on_outlined), selectedIcon: Icon(Icons.monetization_on), important: true),
+  orderAttributes(icon: Icon(Icons.assignment_ind_outlined), selectedIcon: Icon(Icons.assignment_ind)),
+  menu(icon: Icon(Icons.collections_outlined), selectedIcon: Icon(Icons.collections)),
+  printers(icon: Icon(Icons.print_outlined), selectedIcon: Icon(Icons.print)),
+  stockQuantities(icon: Icon(Icons.exposure_outlined), selectedIcon: Icon(Icons.exposure)),
+  transit(icon: Icon(Icons.local_shipping_outlined), selectedIcon: Icon(Icons.local_shipping)),
+  elf(icon: Icon(Icons.lightbulb_outlined), selectedIcon: Icon(Icons.lightbulb)),
+  settings(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings)),
+  debug(icon: Icon(Icons.bug_report_outlined), selectedIcon: Icon(Icons.bug_report)),
 
   /// entrypoint for mobile screen
-  more(
-    icon: Icon(Icons.dehaze_outlined),
-    selectedIcon: Icon(Icons.dehaze),
-  );
+  more(icon: Icon(Icons.dehaze_outlined), selectedIcon: Icon(Icons.dehaze));
 
   final Icon icon;
   final Icon selectedIcon;
   final bool important;
 
-  const _Tab({
-    required this.icon,
-    required this.selectedIcon,
-    this.important = false,
-  });
+  const _Tab({required this.icon, required this.selectedIcon, this.important = false});
 
   Widget wrap(Widget child, [void Function()? action]) {
     return switch (this) {

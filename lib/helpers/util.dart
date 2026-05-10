@@ -37,10 +37,7 @@ class Util {
     return DateTimeRange(start: start, end: end);
   }
 
-  static Widget Function(
-    BuildContext context,
-    AsyncSnapshot<T> snapshot,
-  ) handleSnapshot<T>(
+  static Widget Function(BuildContext context, AsyncSnapshot<T> snapshot) handleSnapshot<T>(
     Widget Function(BuildContext context, T? data) builder, {
     void Function(Object)? onError,
   }) {
@@ -56,9 +53,7 @@ class Util {
           child: SizedBox(
             height: 20,
             width: 20,
-            child: Center(
-              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-            ),
+            child: Center(child: CircularProgressIndicator.adaptive(strokeWidth: 2)),
           ),
         );
       }

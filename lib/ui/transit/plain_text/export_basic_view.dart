@@ -32,11 +32,7 @@ class ExportBasicHeader extends BasicModelPicker {
 }
 
 class ExportBasicView extends ExportView {
-  const ExportBasicView({
-    super.key,
-    required super.selected,
-    required super.stateNotifier,
-  });
+  const ExportBasicView({super.key, required super.selected, required super.stateNotifier});
 
   @override
   Widget buildModel(BuildContext context, FormattableModel able) {
@@ -51,9 +47,7 @@ class ExportBasicView extends ExportView {
           // Title
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final item in rows[0]) Center(child: Text(item)),
-            ],
+            children: [for (final item in rows[0]) Center(child: Text(item))],
           );
         }
 
@@ -69,9 +63,7 @@ class ExportBasicView extends ExportView {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final item in rows[index]) Text(item),
-                ],
+                children: [for (final item in rows[index]) Text(item)],
               ),
             ),
           ),

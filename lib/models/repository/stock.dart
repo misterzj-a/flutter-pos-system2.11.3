@@ -18,10 +18,7 @@ class Stock extends ChangeNotifier
     instance = this;
   }
 
-  Future<void> applyAmounts(
-    Map<String, num> amounts, {
-    onlyAmount = false,
-  }) async {
+  Future<void> applyAmounts(Map<String, num> amounts, {onlyAmount = false}) async {
     final updateData = <String, Object?>{};
 
     amounts.forEach((id, amount) {
@@ -42,12 +39,7 @@ class Stock extends ChangeNotifier
 
   @override
   Ingredient buildItem(String id, Map<String, Object?> value) {
-    return Ingredient.fromObject(
-      IngredientObject.build({
-        'id': id,
-        ...value,
-      }),
-    );
+    return Ingredient.fromObject(IngredientObject.build({'id': id, ...value}));
   }
 
   /// Update amounts by order.

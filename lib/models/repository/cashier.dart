@@ -65,8 +65,10 @@ class Cashier extends ChangeNotifier {
       return false;
     }
 
-    await update(
-        {sourceIndex: -item.source.count!, for (var target in item.targets) indexOf(target.unit!): target.count!});
+    await update({
+      sourceIndex: -item.source.count!,
+      for (var target in item.targets) indexOf(target.unit!): target.count!,
+    });
 
     return true;
   }
@@ -118,10 +120,7 @@ class Cashier extends ChangeNotifier {
       if (index > 0) {
         final unit = at(index - 1).unit;
 
-        return CashierChangeEntryObject(
-          unit: unit,
-          count: (total / unit).floor(),
-        );
+        return CashierChangeEntryObject(unit: unit, count: (total / unit).floor());
       }
     } else {
       for (var i = unitLength - 1; i > index; i--) {
@@ -129,20 +128,14 @@ class Cashier extends ChangeNotifier {
 
         // if not enough to change this unit
         if (total >= iUnit && iUnit != unit) {
-          return CashierChangeEntryObject(
-            unit: iUnit,
-            count: (total / iUnit).floor(),
-          );
+          return CashierChangeEntryObject(unit: iUnit, count: (total / iUnit).floor());
         }
       }
 
       if (index > 0) {
         final unit = at(index - 1).unit;
 
-        return CashierChangeEntryObject(
-          unit: unit,
-          count: (total / unit).floor(),
-        );
+        return CashierChangeEntryObject(unit: unit, count: (total / unit).floor());
       }
     }
 
@@ -151,10 +144,7 @@ class Cashier extends ChangeNotifier {
 
   /// Current and default difference
   Iterable<CashierDiffItem> getDifference() sync* {
-    final iterators = [
-      _current,
-      _default,
-    ].map((e) => e.iterator).toList(growable: false);
+    final iterators = [_current, _default].map((e) => e.iterator).toList(growable: false);
 
     while (iterators.every((e) => e.moveNext())) {
       yield CashierDiffItem(iterators[0].current, iterators[1].current);
@@ -189,11 +179,7 @@ class Cashier extends ChangeNotifier {
     return status;
   }
 
-  CashierUpdateStatus smallChange(
-    Map<int, int> amounts,
-    num price, {
-    bool add = true,
-  }) {
+  CashierUpdateStatus smallChange(Map<int, int> amounts, num price, {bool add = true}) {
     if (price == 0) return CashierUpdateStatus.ok;
 
     var index = unitLength - 1;
@@ -338,17 +324,13 @@ class Cashier extends ChangeNotifier {
   }
 
   Future<void> _updateCurrentStorage() async {
-    await Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_currentKey': _current.map((e) => e.toMap()).toList(),
-    });
+    await Storage.instance.set(Stores.cashier, {'$_recordName.$_currentKey': _current.map((e) => e.toMap()).toList()});
 
     notifyListeners();
   }
 
   Future<void> _updateDefaultStorage() {
-    return Storage.instance.set(Stores.cashier, {
-      '$_recordName.$_defaultKey': _default.map((e) => e.toMap()).toList(),
-    });
+    return Storage.instance.set(Stores.cashier, {'$_recordName.$_defaultKey': _default.map((e) => e.toMap()).toList()});
   }
 
   Future<void> _updateFavoriteStorage() async {
@@ -387,5 +369,5 @@ enum CashierUpdateStatus {
   usingSmall,
 
   /// When the cashier has enough money to change
-  ok
+  ok,
 }

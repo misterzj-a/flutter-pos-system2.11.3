@@ -219,9 +219,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
 
   @override
   Future<void> saveBatch(Iterable<RepositoryBatchData> data) {
-    return Storage.instance.set(storageStore, {
-      for (final item in data) '${item.id}.${item.key}': item.value,
-    });
+    return Storage.instance.set(storageStore, {for (final item in data) '${item.id}.${item.key}': item.value});
   }
 
   @override
@@ -242,11 +240,7 @@ mixin RepositoryStorage<T extends Model> on Repository<T> {
   }
 }
 
-enum RepositoryStorageType {
-  pureRepo,
-  repoModel,
-  repoProperties,
-}
+enum RepositoryStorageType { pureRepo, repoModel, repoProperties }
 
 class RepositoryBatchData {
   final String id;

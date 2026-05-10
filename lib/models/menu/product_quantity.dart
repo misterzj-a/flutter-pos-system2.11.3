@@ -54,17 +54,11 @@ class ProductQuantity extends Model<ProductQuantityObject>
     );
   }
 
-  factory ProductQuantity.fromRow(
-    ProductQuantity? ori,
-    List<String> row,
-  ) {
+  factory ProductQuantity.fromRow(ProductQuantity? ori, List<String> row) {
     var quantity =
         ori?.quantity ?? Quantities.instance.getItemByName(row[0]) ?? Quantities.instance.getStagedByName(row[0]);
     if (quantity == null) {
-      quantity = Quantity(
-        name: row[0],
-        status: ModelStatus.staged,
-      );
+      quantity = Quantity(name: row[0], status: ModelStatus.staged);
       Quantities.instance.addStaged(quantity);
     }
 
@@ -74,8 +68,8 @@ class ProductQuantity extends Model<ProductQuantityObject>
     final status = ori == null
         ? ModelStatus.staged
         : (amount == ori.amount && ap == ori.additionalPrice && ac == ori.additionalCost
-            ? ModelStatus.normal
-            : ModelStatus.updated);
+              ? ModelStatus.normal
+              : ModelStatus.updated);
 
     return ProductQuantity(
       id: ori?.id,
@@ -113,10 +107,10 @@ class ProductQuantity extends Model<ProductQuantityObject>
 
   @override
   ProductQuantityObject toObject() => ProductQuantityObject(
-        id: id,
-        quantityId: quantity.id,
-        amount: amount,
-        additionalCost: additionalCost,
-        additionalPrice: additionalPrice,
-      );
+    id: id,
+    quantityId: quantity.id,
+    amount: amount,
+    additionalCost: additionalCost,
+    additionalPrice: additionalPrice,
+  );
 }

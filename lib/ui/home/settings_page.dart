@@ -19,10 +19,7 @@ import 'package:possystem/translator.dart';
 class SettingsPage extends StatelessWidget {
   final String? focus;
 
-  const SettingsPage({
-    super.key,
-    this.focus,
-  });
+  const SettingsPage({super.key, this.focus});
 
   @override
   Widget build(BuildContext context) {
@@ -149,10 +146,7 @@ class SettingsPage extends StatelessWidget {
 class ItemListScaffold extends StatelessWidget {
   final Feature feature;
 
-  const ItemListScaffold({
-    super.key,
-    required this.feature,
-  });
+  const ItemListScaffold({super.key, required this.feature});
 
   @override
   Widget build(BuildContext context) {
@@ -160,25 +154,24 @@ class ItemListScaffold extends StatelessWidget {
 
     final selected = ValueNotifier<int>(feature.selected);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(feature.title),
-        leading: const PopButton(),
-      ),
+      appBar: AppBar(title: Text(feature.title), leading: const PopButton()),
       body: ValueListenableBuilder(
         valueListenable: selected,
         builder: (context, value, child) => ListView(
           children: IterableZip([feature.itemTitles, feature.itemSubtitles])
-              .mapIndexed((index, pair) => ListTile(
-                    title: Text(pair[0]),
-                    trailing: value == index ? const Icon(Icons.check_outlined) : null,
-                    subtitle: Text(pair[1], style: hintStyle),
-                    onTap: () async {
-                      if (value != index) {
-                        selected.value = index;
-                        await feature.update(index);
-                      }
-                    },
-                  ))
+              .mapIndexed(
+                (index, pair) => ListTile(
+                  title: Text(pair[0]),
+                  trailing: value == index ? const Icon(Icons.check_outlined) : null,
+                  subtitle: Text(pair[1], style: hintStyle),
+                  onTap: () async {
+                    if (value != index) {
+                      selected.value = index;
+                      await feature.update(index);
+                    }
+                  },
+                ),
+              )
               .toList(),
         ),
       ),

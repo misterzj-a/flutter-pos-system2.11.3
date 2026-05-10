@@ -47,9 +47,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.byKey(const Key('transit.pt_text')),
-          '${S.transitFormatTextQuantitiesHeader(1)}\n\n'
-          '${S.transitFormatTextQuantitiesQuantity('1', 'q1', '1')}');
+        find.byKey(const Key('transit.pt_text')),
+        '${S.transitFormatTextQuantitiesHeader(1)}\n\n'
+        '${S.transitFormatTextQuantitiesQuantity('1', 'q1', '1')}',
+      );
       await tester.tap(find.byKey(const Key('transit.pt_preview')));
       await tester.pumpAndSettle();
 

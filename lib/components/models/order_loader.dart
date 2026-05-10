@@ -39,10 +39,7 @@ class _OrderLoaderState extends State<OrderLoader> {
   Widget build(BuildContext context) {
     return ItemLoader<OrderObject, OrderMetrics>(
       leading: widget.leading,
-      prototypeItem: widget.builder(
-        context,
-        OrderObject(createdAt: DateTime.now()),
-      ),
+      prototypeItem: widget.builder(context, OrderObject(createdAt: DateTime.now())),
       notifier: widget.ranger,
       loader: _loadOrders,
       metricsLoader: _loadMetrics,
@@ -54,10 +51,12 @@ class _OrderLoaderState extends State<OrderLoader> {
           S.orderLoaderMetaTotalCost(metrics.cost.toCurrency()),
           S.orderLoaderMetaTotalCount(metrics.count),
         ])!;
-        return Row(children: [
-          Expanded(child: Center(child: meta)),
-          if (widget.trailingBuilder != null) buildTrailing(metrics),
-        ]);
+        return Row(
+          children: [
+            Expanded(child: Center(child: meta)),
+            if (widget.trailingBuilder != null) buildTrailing(metrics),
+          ],
+        );
       },
       emptyChild: widget.emptyChild ?? HintText(S.orderLoaderEmpty),
     );
@@ -76,10 +75,7 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   Widget buildTrailing(OrderMetrics metrics) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: widget.trailingBuilder!(context, metrics),
-    );
+    return Padding(padding: const EdgeInsets.only(right: 8.0), child: widget.trailingBuilder!(context, metrics));
   }
 
   void _reloadOrders() {
@@ -100,10 +96,6 @@ class _OrderLoaderState extends State<OrderLoader> {
   }
 
   Future<List<OrderObject>> _loadOrders(int offset) {
-    return Seller.instance.getOrders(
-      widget.ranger.value.start,
-      widget.ranger.value.end,
-      offset: offset,
-    );
+    return Seller.instance.getOrders(widget.ranger.value.start, widget.ranger.value.end, offset: offset);
   }
 }

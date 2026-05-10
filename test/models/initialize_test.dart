@@ -26,14 +26,8 @@ void main() {
     });
 
     test('Menu', () async {
-      Stock().replaceItems({
-        'i-1': Ingredient(id: 'i-1', name: 'i-1'),
-        'i-2': Ingredient(id: 'i-2', name: 'i-2'),
-      });
-      Quantities().replaceItems({
-        'q-1': Quantity(id: 'q-1', name: 'q-1'),
-        'q-2': Quantity(id: 'q-2', name: 'q-2'),
-      });
+      Stock().replaceItems({'i-1': Ingredient(id: 'i-1', name: 'i-1'), 'i-2': Ingredient(id: 'i-2', name: 'i-2')});
+      Quantities().replaceItems({'q-1': Quantity(id: 'q-1', name: 'q-1'), 'q-2': Quantity(id: 'q-2', name: 'q-2')});
 
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       when(storage.get(Stores.menu, argThat(isNull))).thenAnswer(
@@ -54,44 +48,19 @@ void main() {
                     'ingredientId': 'i-1',
                     'amount': 5,
                     'quantities': {
-                      'pq-1': {
-                        'quantityId': 'q-1',
-                        'amount': 5,
-                        'additionalCost': 5,
-                        'additionalPrice': 10,
-                      },
-                      'q-2': {
-                        'amount': -5,
-                        'additionalCost': 0,
-                        'additionalPrice': 0,
-                      },
-                      'pq-3': {
-                        'quantityId': 'q-3',
-                        'amount': 5,
-                        'additionalCost': 5,
-                        'additionalPrice': 10,
-                      },
+                      'pq-1': {'quantityId': 'q-1', 'amount': 5, 'additionalCost': 5, 'additionalPrice': 10},
+                      'q-2': {'amount': -5, 'additionalCost': 0, 'additionalPrice': 0},
+                      'pq-3': {'quantityId': 'q-3', 'amount': 5, 'additionalCost': 5, 'additionalPrice': 10},
                     },
                   },
                   'i-2': {'amount': 5},
                   'pi-3': {'ingredientId': 'i-3', 'amount': 5},
                 },
               },
-              'p-2': {
-                'price': 7,
-                'cost': 3,
-                'index': 2,
-                'name': 'p-2',
-                'createdAt': now,
-                'searchedAt': now,
-              }
+              'p-2': {'price': 7, 'cost': 3, 'index': 2, 'name': 'p-2', 'createdAt': now, 'searchedAt': now},
             },
           },
-          'c-2': {
-            'index': 2,
-            'name': 'c-2',
-            'createdAt': now,
-          },
+          'c-2': {'index': 2, 'name': 'c-2', 'createdAt': now},
           'c-3': {},
         }),
       );
@@ -140,55 +109,53 @@ void main() {
       expect(pq2.ingredient, isNotNull);
 
       // verify version changed
-      verify(storage.setAll(
-        Stores.menu,
-        argThat(equals({
-          'c-1': {
-            'index': 1,
-            'name': 'c-1',
-            'imagePath': null,
-            'createdAt': now,
-            'products': {
-              'p-1': {
-                'price': 10,
-                'cost': 5,
+      verify(
+        storage.setAll(
+          Stores.menu,
+          argThat(
+            equals({
+              'c-1': {
                 'index': 1,
-                'name': 'p-1',
-                'createdAt': now,
+                'name': 'c-1',
                 'imagePath': null,
-                'ingredients': {
-                  'pi-1': {
-                    'ingredientId': 'i-1',
-                    'index': 0,
-                    'amount': 5,
-                    'quantities': {
-                      'pq-1': {'quantityId': 'q-1', 'amount': 5, 'additionalCost': 5, 'additionalPrice': 10},
-                      pq2.id: {'quantityId': 'q-2', 'amount': -5, 'additionalCost': 0, 'additionalPrice': 0}
-                    }
+                'createdAt': now,
+                'products': {
+                  'p-1': {
+                    'price': 10,
+                    'cost': 5,
+                    'index': 1,
+                    'name': 'p-1',
+                    'createdAt': now,
+                    'imagePath': null,
+                    'ingredients': {
+                      'pi-1': {
+                        'ingredientId': 'i-1',
+                        'index': 0,
+                        'amount': 5,
+                        'quantities': {
+                          'pq-1': {'quantityId': 'q-1', 'amount': 5, 'additionalCost': 5, 'additionalPrice': 10},
+                          pq2.id: {'quantityId': 'q-2', 'amount': -5, 'additionalCost': 0, 'additionalPrice': 0},
+                        },
+                      },
+                      pi2.id: {'ingredientId': 'i-2', 'index': 0, 'amount': 5, 'quantities': {}},
+                    },
                   },
-                  pi2.id: {'ingredientId': 'i-2', 'index': 0, 'amount': 5, 'quantities': {}}
-                }
+                  'p-2': {
+                    'price': 7,
+                    'cost': 3,
+                    'index': 2,
+                    'name': 'p-2',
+                    'createdAt': now,
+                    'imagePath': null,
+                    'ingredients': {},
+                  },
+                },
               },
-              'p-2': {
-                'price': 7,
-                'cost': 3,
-                'index': 2,
-                'name': 'p-2',
-                'createdAt': now,
-                'imagePath': null,
-                'ingredients': {}
-              }
-            }
-          },
-          'c-2': {
-            'index': 2,
-            'name': 'c-2',
-            'imagePath': null,
-            'createdAt': now,
-            'products': {},
-          }
-        })),
-      ));
+              'c-2': {'index': 2, 'name': 'c-2', 'imagePath': null, 'createdAt': now, 'products': {}},
+            }),
+          ),
+        ),
+      );
     });
 
     test('Stock', () async {
@@ -224,14 +191,8 @@ void main() {
     test('Quantities', () async {
       when(storage.get(Stores.quantities, argThat(isNull))).thenAnswer(
         (_) => Future.value({
-          'q-1': {
-            'name': 'q-1',
-            'defaultProportion': 10,
-          },
-          'q-2': {
-            'name': 'q-2',
-            'defaultProportion': 0,
-          },
+          'q-1': {'name': 'q-1', 'defaultProportion': 10},
+          'q-2': {'name': 'q-2', 'defaultProportion': 0},
         }),
       );
 
@@ -250,11 +211,7 @@ void main() {
         (_) => Future.value({
           'r-1': {
             'name': 'r-1',
-            'data': {
-              'i-1': 10,
-              'i-2': 0,
-              'i-3': -10,
-            },
+            'data': {'i-1': 10, 'i-2': 0, 'i-3': -10},
           },
           'r-2': {'name': 'r-2'},
         }),
@@ -278,29 +235,12 @@ void main() {
             'index': 1,
             'mode': 1,
             'options': {
-              'co-1': {
-                'name': 'co-1',
-                'index': 1,
-                'isDefault': 1,
-                'modeValue': 1,
-              },
-              'co-2': {
-                'name': 'co-2',
-                'index': 2,
-                'isDefault': 0,
-                'modeValue': null,
-              }
+              'co-1': {'name': 'co-1', 'index': 1, 'isDefault': 1, 'modeValue': 1},
+              'co-2': {'name': 'co-2', 'index': 2, 'isDefault': 0, 'modeValue': null},
             },
           },
-          'c-2': {
-            'name': 'c-2',
-            'index': 2,
-            'mode': 0,
-            'options': <String, Object?>{},
-          },
-          'c-3': {
-            'name': 1,
-          },
+          'c-2': {'name': 'c-2', 'index': 2, 'mode': 0, 'options': <String, Object?>{}},
+          'c-3': {'name': 1},
         }),
       );
 
@@ -338,10 +278,7 @@ void main() {
       final c2 = Analysis.instance.getItem('c-2')!;
       expect(c1.name, equals('c-1'));
       expect(c1.type.name, equals('cartesian'));
-      expect(
-        c1.metrics,
-        equals([OrderMetricType.cost, OrderMetricType.profit]),
-      );
+      expect(c1.metrics, equals([OrderMetricType.cost, OrderMetricType.profit]));
       expect(c2.name, equals('c-2'));
       expect(c2.type.name, equals('circular'));
       expect(c2.metrics, equals([OrderMetricType.cost]));
@@ -360,14 +297,11 @@ void main() {
     });
 
     test('Printers', () async {
-      when(storage.get(Stores.printers, 'printer')).thenAnswer((_) => Future.value({
-            'p-1': {
-              'name': 'name',
-              'address': 'address',
-              'autoConnect': true,
-              'provider': 0,
-            }
-          }));
+      when(storage.get(Stores.printers, 'printer')).thenAnswer(
+        (_) => Future.value({
+          'p-1': {'name': 'name', 'address': 'address', 'autoConnect': true, 'provider': 0},
+        }),
+      );
       when(storage.get(Stores.printers, 'setting')).thenAnswer((_) => Future.value({'density': 1}));
 
       await Printers().initialize();

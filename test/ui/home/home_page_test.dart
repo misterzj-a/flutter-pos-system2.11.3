@@ -35,34 +35,34 @@ void main() {
         testWidgets('should navigate correctly', (tester) async {
           deviceAs(device, tester);
           // disable tutorial
-          when(cache.get(
-            argThat(predicate<String>((key) => key.startsWith('tutorial.'))),
-          )).thenReturn(true);
+          when(cache.get(argThat(predicate<String>((key) => key.startsWith('tutorial.'))))).thenReturn(true);
 
-          await tester.pumpWidget(MultiProvider(
-            providers: [
-              ChangeNotifierProvider.value(value: SettingsProvider.instance),
-              ChangeNotifierProvider.value(value: Seller.instance),
-              ChangeNotifierProvider.value(value: Menu()),
-              ChangeNotifierProvider.value(value: Stock()..replaceItems({'i1': Ingredient(id: 'i1')})),
-              ChangeNotifierProvider.value(value: Quantities()),
-              ChangeNotifierProvider.value(value: OrderAttributes()),
-              ChangeNotifierProvider.value(value: Analysis()),
-              ChangeNotifierProvider.value(value: Cart()),
-              ChangeNotifierProvider.value(value: Cashier()),
-              ChangeNotifierProvider.value(value: Printers()),
-            ],
-            child: MaterialApp.router(
-              routerConfig: GoRouter(
-                navigatorKey: Routes.rootNavigatorKey,
-                observers: [App.routeObserver],
-                initialLocation: device == Device.mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
-                routes: Routes.getDesiredRoute(device.width / tester.view.devicePixelRatio).routes,
+          await tester.pumpWidget(
+            MultiProvider(
+              providers: [
+                ChangeNotifierProvider.value(value: SettingsProvider.instance),
+                ChangeNotifierProvider.value(value: Seller.instance),
+                ChangeNotifierProvider.value(value: Menu()),
+                ChangeNotifierProvider.value(value: Stock()..replaceItems({'i1': Ingredient(id: 'i1')})),
+                ChangeNotifierProvider.value(value: Quantities()),
+                ChangeNotifierProvider.value(value: OrderAttributes()),
+                ChangeNotifierProvider.value(value: Analysis()),
+                ChangeNotifierProvider.value(value: Cart()),
+                ChangeNotifierProvider.value(value: Cashier()),
+                ChangeNotifierProvider.value(value: Printers()),
+              ],
+              child: MaterialApp.router(
+                routerConfig: GoRouter(
+                  navigatorKey: Routes.rootNavigatorKey,
+                  observers: [App.routeObserver],
+                  initialLocation: device == Device.mobile ? '${Routes.base}/_' : '${Routes.base}/_/menu',
+                  routes: Routes.getDesiredRoute(device.width / tester.view.devicePixelRatio).routes,
+                ),
+                theme: AppThemes.lightTheme,
+                darkTheme: AppThemes.darkTheme,
               ),
-              theme: AppThemes.lightTheme,
-              darkTheme: AppThemes.darkTheme,
             ),
-          ));
+          );
 
           Future<void> navAndCheck(
             String key,
@@ -226,24 +226,25 @@ void main() {
       when(auth.authStateChanges()).thenAnswer((_) => Stream.value(null));
 
       // setup seller
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-      )).thenAnswer((_) => Future.value([
-            {'totalPrice': 20, 'count': 10},
-          ]));
-      when(database.query(
-        any,
-        columns: anyNamed('columns'),
-        groupBy: anyNamed('groupBy'),
-        orderBy: anyNamed('orderBy'),
-        where: anyNamed('where'),
-        whereArgs: anyNamed('whereArgs'),
-        escapeTable: anyNamed('escapeTable'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) => Future.value([]));
+      when(
+        database.query(any, columns: anyNamed('columns'), where: anyNamed('where'), whereArgs: anyNamed('whereArgs')),
+      ).thenAnswer(
+        (_) => Future.value([
+          {'totalPrice': 20, 'count': 10},
+        ]),
+      );
+      when(
+        database.query(
+          any,
+          columns: anyNamed('columns'),
+          groupBy: anyNamed('groupBy'),
+          orderBy: anyNamed('orderBy'),
+          where: anyNamed('where'),
+          whereArgs: anyNamed('whereArgs'),
+          escapeTable: anyNamed('escapeTable'),
+          limit: anyNamed('limit'),
+        ),
+      ).thenAnswer((_) => Future.value([]));
     });
 
     setUpAll(() {

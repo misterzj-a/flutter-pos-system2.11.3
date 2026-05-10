@@ -83,17 +83,8 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
         Widget w = const SizedBox.shrink();
         if (context.mounted) {
           w = error == null
-              ? buildSingle(
-                  context,
-                  widget.emptyBuilder(context, controller.text),
-                )
-              : buildSingle(
-                  context,
-                  ListTile(
-                    title: Text(error),
-                    leading: const Icon(KIcons.warn),
-                  ),
-                );
+              ? buildSingle(context, widget.emptyBuilder(context, controller.text))
+              : buildSingle(context, ListTile(title: Text(error), leading: const Icon(KIcons.warn)));
         }
 
         return [w];
@@ -122,11 +113,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
       removeTop: true,
       child: ListView.builder(
         itemCount: items.length,
-        itemBuilder: (context, index) => widget.itemBuilder(
-          context,
-          searchController.text,
-          items.elementAt(index),
-        ),
+        itemBuilder: (context, index) => widget.itemBuilder(context, searchController.text, items.elementAt(index)),
       ),
     );
   }
@@ -135,10 +122,7 @@ class _SearchBarWrapperState<T> extends State<SearchBarWrapper<T>> {
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
-      child: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (context, index) => child,
-      ),
+      child: ListView.builder(itemCount: 1, itemBuilder: (context, index) => child),
     );
   }
 }
