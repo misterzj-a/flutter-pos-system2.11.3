@@ -1,0 +1,78 @@
+name: 构建APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # 🔥 严格按照你提供的命令 生成签名文件
+      - name: 生成 my-jks.jks 签名文件
+        run: |
+          keytool -genkey -v -keystore android/app/my-jks.jks \
+          -alias possystem \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -storepass possystem \
+          -keypass possystem \
+          -dname "CN=possystem, OU=possystem, O=possystem, L=Unknown, ST=Unknown, C=Unknown"
+
+      # 🔥 对应生成 key.properties（严格匹配）
+      - name: 创建 key.properties
+        run: |
+          echo "storePassword=possystem" > android/key.properties
+          echo "keyPassword=possystem" >> android/key.properties
+          echo "keyAlias=possystem" >> android/key.properties
+          echo "storeFile=my-jks.jks" >> android/key.properties
+
+      - name: 生成google-services.json
+        run: |
+          cat > android/app/google-services.json << EOF
+          {
+            "project_info": {
+              "project_number": "123456789",
+              "firebase_url": "https://fake.firebaseio.com",
+              "project_id": "fake-project",
+              "storage_bucket": "fake.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789:android:abcdef",
+                  "android_client_info": {
+                    "package_name": "com.evanlu.possystem"
+                  }
+                },
+                "api_key": [
+                  {
+                    "current_key": "fake_api_key_1234567890"
+                  }
+                ]
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOF
+
+      - name: 安装Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.x'
+          channel: stable
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 打包APK
+
+        run: flutter build apk --debug --flavor dev
+
+      # 🔥 上传所有 APK，绝对能找到
+      - name: 上传APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-apk
+          path: build/app/outputs/flutter-apk/
