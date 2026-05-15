@@ -35,6 +35,7 @@ dependencies:
     git:
       url: https://github.com/evan361425/flutter-pos-packages-mock
       ref: master
+      path: packages/flutter_blue_plus
 
   # google services
   googleapis: ^14.0.0
