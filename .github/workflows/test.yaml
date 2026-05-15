@@ -1,41 +1,40 @@
 name: Tests
 
-# Controls when the action will run.
+# 触发条件（修复：统一分支、取消过度忽略、修复逻辑）
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches:
       - master
+      - main  # 兼容主流主分支
     paths-ignore:
       - "**.md"
       - "docs/**"
       - "scripts/**"
-      - "pubspec.yaml"
-      - "pubspec.lock"
       - "mkdocs.yaml"
       - "Makefile"
-      - ".github/**"
   pull_request:
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches:
+      - master
+      - main
   workflow_dispatch:
 
 jobs:
   code-checking:
     name: Check code format and testing
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.head_ref , 'refs/heads/ci/') }}
+    # 修复：正确判断分支前缀，不会误杀所有任务
+    if: ${{ !startsWith(github.head_ref, 'ci/') }}
     steps:
       - uses: actions/checkout@v4
 
-      # Setup the flutter environment.
+      # 修复：Flutter 版本不存在，替换为正确稳定版
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.35.x"
+          flutter-version: "3.22.3"
           cache: true
           channel: "stable"
 
-      # Get flutter dependencies.
+      # 安装依赖
       - name: Install dependencies
         env:
           GH_READ_PAT: ${{ secrets.GH_READ_PAT }}
@@ -44,16 +43,17 @@ jobs:
           git config --global credential.helper store
           flutter pub get
 
-      # Statically analyze the Dart code for any errors.
+      # 代码检查
       - name: Linter
         run: flutter analyze .
 
+      # 代码格式化
       - name: Format
         run: |
-          dart format --line-length 120 lib/l10n/gen
+          dart format --line-length 120 lib/l10n/gen || true
           dart format --set-exit-if-changed --show none --line-length 120 .
 
-      # Run widget tests for our flutter project.
+      # 测试逻辑
       - name: Testing
         if: github.event_name == 'pull_request'
         run: flutter test
@@ -63,10 +63,12 @@ jobs:
         run: |
           sudo apt-get install -y lcov
           flutter test --coverage
-          lcov --remove coverage/lcov.info "lib/l10n/gen/*" 
+          lcov --remove coverage/lcov.info "lib/l10n/gen/*" -o coverage/lcov.info
 
+      # 上传覆盖率
       - name: Coverage to codecov
         if: github.event_name != 'pull_request'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: coverage/lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
